@@ -79,22 +79,33 @@
         /* ═══ MOBILE ═══ */
         @media (max-width: 767.98px) {
             body { overflow-x: hidden; }
-            .bauhaus-card { box-shadow: 5px 5px 0 #ff0000; }
+
+            /* Card: sin sombra lateral — evita el desborde rojo */
+            .bauhaus-card {
+                box-shadow: 0 6px 0 #ff0000;
+                border-left: none;
+                border-right: none;
+                border-radius: 0;
+            }
+
+            /* Contenedor edge-to-edge */
+            .container { padding-left: 0 !important; padding-right: 0 !important; }
+            .col-lg-10 { padding-left: 0; padding-right: 0; }
 
             /* Header */
-            .header-box { padding: 12px 14px; }
-            .header-box h2 { font-size: .88rem; letter-spacing: 0; }
-            .info-badge { font-size: .74rem; padding: 2px 7px; }
+            .header-box { padding: 12px 16px; }
+            .header-box h2 { font-size: .85rem; letter-spacing: 0; }
+            .info-badge { font-size: .72rem; padding: 2px 7px; }
 
             /* Hero */
-            .hero { padding: 16px 14px; }
-            .freedom-date { font-size: 1.35rem; }
-            .freedom-label { font-size: .58rem; letter-spacing: 1px; }
+            .hero { padding: 16px; }
+            .freedom-date { font-size: 1.3rem; }
+            .freedom-label { font-size: .57rem; letter-spacing: 1px; }
             .freedom-col { padding-left: 14px; }
-            #heroSavedM { font-size: 1.4rem !important; }
+            #heroSavedM { font-size: 1.35rem !important; }
 
             /* Ticker: apilar en columna */
-            .ticker { flex-direction: column; align-items: stretch; padding: 12px 14px; gap: 10px; }
+            .ticker { flex-direction: column; align-items: stretch; padding: 12px 16px; gap: 10px; }
             .ticker-label { font-size: .62rem; }
             .ticker-val { font-size: 1.55rem; min-width: unset; }
             .ticker > div:last-child { margin-left: 0 !important; width: 100%; }
@@ -103,21 +114,29 @@
             .stat-pill-lbl { font-size: .57rem; }
 
             /* Milestones */
-            .ms-section { padding: 12px 14px 16px; }
+            .ms-section { padding: 12px 16px 16px; }
             .ms-dot { width: 28px; height: 28px; font-size: .68rem; border-width: 3px; margin-top: -16px; }
             .ms-lbl { font-size: .62rem; }
             .ms-date { font-size: .55rem; }
 
             /* Card body */
-            .card-body { padding: 14px !important; }
+            .card-body { padding: 16px !important; }
             .scenario-normal, .scenario-extra { padding: 12px; }
             .savings-box { padding: 14px; }
             .savings-box .fs-2 { font-size: 1.35rem !important; }
             .insight { font-size: .83rem; padding: 12px 14px; }
 
-            /* Tablas */
-            table.amort td, table.amort th { padding: 3px 6px; font-size: .71rem; }
-            .sc-table td, .sc-table th { padding: 5px 8px; font-size: .78rem; }
+            /* Tablas: nowrap evita que los montos partan en 2 líneas */
+            table.amort td, table.amort th {
+                padding: 5px 8px;
+                font-size: .75rem;
+                white-space: nowrap;
+            }
+            .sc-table td, .sc-table th {
+                padding: 6px 10px;
+                font-size: .8rem;
+                white-space: nowrap;
+            }
 
             /* Títulos de secciones */
             h4.text-uppercase { font-size: 1rem; }
