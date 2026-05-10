@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fondo completo para ícono maskable (safe zone = 80% central) -->
+  <rect width="512" height="512" fill="#111"/>
+  <!-- "L" centrada dentro del safe zone (padding ~52px) -->
+  <rect x="160" y="116" width="60" height="248" fill="#ffcc00"/>
+  <rect x="160" y="304" width="168" height="60" fill="#ffcc00"/>
+  <!-- Acento azul -->
+  <rect x="328" y="116" width="60" height="60" fill="#0055ff"/>
+  <!-- Punto rojo -->
+  <circle cx="368" cy="392" r="36" fill="#ff0000"/>
+</svg>

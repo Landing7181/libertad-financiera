@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fondo negro Bauhaus -->
+  <rect width="512" height="512" fill="#111"/>
+  <!-- "L" de Libertad en amarillo Bauhaus — trazo vertical -->
+  <rect x="148" y="96" width="68" height="284" fill="#ffcc00"/>
+  <!-- "L" — trazo horizontal -->
+  <rect x="148" y="312" width="188" height="68" fill="#ffcc00"/>
+  <!-- Cuadrado azul acento (esquina superior derecha) -->
+  <rect x="336" y="96" width="68" height="68" fill="#0055ff"/>
+  <!-- Punto rojo Bauhaus (esquina inferior derecha) -->
+  <circle cx="380" cy="412" r="40" fill="#ff0000"/>
+</svg>
