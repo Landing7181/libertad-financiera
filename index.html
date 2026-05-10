@@ -152,10 +152,8 @@
 
     <!-- HEADER -->
     <div class="header-box">
-      <h2 class="text-uppercase m-0">Proyecto: Libertad de Cristian</h2>
+      <h2 class="text-uppercase m-0">Proyecto Credito</h2>
       <div class="mt-2 d-flex flex-wrap gap-2">
-        <span class="info-badge">Colpensiones</span>
-        <span class="info-badge">Apertura: 31/may/2021</span>
         <span class="info-badge" id="badgePaid">Cuotas: …</span>
       </div>
     </div>
@@ -256,27 +254,30 @@
       <div class="row g-3 mb-4">
         <div class="col-md-3">
           <label class="form-label fw-bold">Saldo actual ($)</label>
-          <input type="number" id="balance" class="form-control border-dark" value="13379159"
+          <input type="number" id="balance" class="form-control border-dark"
                  oninput="onBalanceChanged()">
         </div>
         <div class="col-md-3">
           <label class="form-label fw-bold">Cuota mensual ($)</label>
-          <input type="number" id="installment" class="form-control border-dark" value="342430">
+          <input type="number" id="installment" class="form-control border-dark"
+                 oninput="saveConfig()">
         </div>
         <div class="col-md-3">
           <label class="form-label fw-bold">Tasa nominal anual (%)</label>
-          <input type="number" id="annualRate" class="form-control border-dark" value="11.88" step="0.01">
+          <input type="number" id="annualRate" class="form-control border-dark" step="0.01"
+                 oninput="saveConfig();onBalanceChanged()">
           <small class="text-muted">Mensual: <strong><span id="mrdisplay">0.9900</span>%</strong></small>
         </div>
         <div class="col-md-3">
           <label class="form-label fw-bold">Fecha próximo pago</label>
-          <input type="date" id="nextPaymentDate" class="form-control border-dark" value="2026-06-05">
+          <input type="date" id="nextPaymentDate" class="form-control border-dark"
+                 oninput="saveConfig()">
         </div>
         <div class="col-md-6">
           <label class="form-label fw-bold text-danger">Abono extra a capital ($/mes)</label>
-          <input type="number" id="extra" class="form-control border-dark bg-light" value="342430"
+          <input type="number" id="extra" class="form-control border-dark bg-light"
                  oninput="saveExtra();quickCalc()">
-          <small class="text-muted">Reduce el plazo — la cuota mensual de $342.430 no cambia</small>
+          <small class="text-muted">Reduce el plazo — la cuota mensual no cambia</small>
         </div>
         <div class="col-md-6 d-flex align-items-center">
           <button onclick="calculate()" class="btn btn-bauhaus w-100 py-3 text-uppercase fs-5">
@@ -287,7 +288,7 @@
 
       <!-- INSIGHT -->
       <div id="insightBox" class="insight mb-4 d-none">
-        <strong>Dato clave:</strong> De tu próxima cuota de <strong>$342.430</strong>,
+        <strong>Dato clave:</strong> De tu próxima cuota de <strong id="insPmt">—</strong>,
         solo <strong id="insCapital">—</strong> va a reducir deuda.
         Los otros <strong id="insInterest">—</strong> son intereses — dinero que no recuperas.
         Con un abono extra de <strong id="insExtra">—</strong> adicional,
@@ -419,16 +420,38 @@ function s(id,v) { let e=document.getElementById(id); if(e) e.textContent=v; }
 
 const REF = {
     date:        new Date('2026-05-05T12:00:00'),
-    balance:     13379159,
+    balance:     0,
     paid:        57,
     totalTerm:   108,
-    payment:     342430,
-    annualRate:  11.88,
+    payment:     0,
+    annualRate:  0,
     payDay:      5,
-    originalAmt: 21784000
+    originalAmt: 0
 };
 const FIRST_PMT = addMonthsD(REF.date, -(REF.paid - 1));
-const PRESETS   = [0, 50000, 100000, 200000, 342430, 500000, 700000, 1000000];
+const PRESETS   = [0, 50000, 100000, 200000, 500000, 700000, 1000000];
+
+/* ── Persistencia de configuración financiera en localStorage ── */
+function saveConfig() {
+    localStorage.setItem('lf_payment',  document.getElementById('installment').value   || '');
+    localStorage.setItem('lf_rate',     document.getElementById('annualRate').value     || '');
+    localStorage.setItem('lf_nextDate', document.getElementById('nextPaymentDate').value || '');
+}
+function loadConfig() {
+    let pmt  = localStorage.getItem('lf_payment');
+    let rate = localStorage.getItem('lf_rate');
+    let nd   = localStorage.getItem('lf_nextDate');
+    let bal  = localStorage.getItem('lf_balance');
+    let orig = localStorage.getItem('lf_orig');
+    let ext  = localStorage.getItem('lf_extra') || localStorage.getItem('creditExtra');
+    if (pmt)  document.getElementById('installment').value      = pmt;
+    if (rate) document.getElementById('annualRate').value       = rate;
+    if (nd)   document.getElementById('nextPaymentDate').value  = nd;
+    if (bal)  document.getElementById('balance').value          = bal;
+    if (ext)  document.getElementById('extra').value            = ext;
+    if (rate) document.getElementById('mrdisplay').textContent  = (parseFloat(rate)/12).toFixed(4);
+    if (orig) REF.originalAmt = parseFloat(orig);
+}
 
 let chartInst = null, tickerIv = null, pageOpen = Date.now();
 
@@ -446,52 +469,37 @@ function simulate(bal, pmt, rate, extra) {
 }
 
 function autoFill() {
-    let today = new Date(), r = REF.annualRate / 12 / 100;
-    let elapsed = 0;
-    let check = addMonthsD(REF.date, 1);
-    check.setDate(REF.payDay);
-    while (check <= today) { elapsed++; check = addMonthsD(check, 1); }
+    loadConfig();
+    let today = new Date();
+    let bal   = parseFloat(document.getElementById('balance').value)      || 0;
+    let pmt   = parseFloat(document.getElementById('installment').value)  || 0;
+    let ann   = parseFloat(document.getElementById('annualRate').value)   || 0;
+    let r     = ann / 12 / 100;
 
-    let bal = REF.balance;
-    for (let i = 0; i < elapsed; i++) bal = Math.max(0, bal - (REF.payment - bal * r));
-    bal = Math.round(bal);
-
-    let paidNow = REF.paid + elapsed;
-    let nextStr = check.getFullYear()+'-'+String(check.getMonth()+1).padStart(2,'0')+'-'+String(REF.payDay).padStart(2,'0');
-
-    document.getElementById('balance').value         = bal;
-    document.getElementById('nextPaymentDate').value = nextStr;
-    document.getElementById('annualRate').value      = REF.annualRate;
-    document.getElementById('mrdisplay').textContent = (REF.annualRate/12).toFixed(4);
-    s('badgePaid', 'Cuotas: '+paidNow+' de '+REF.totalTerm+' pagadas');
-
-    if (elapsed > 0) {
-        document.getElementById('estimatedNotice').classList.remove('d-none');
-        s('noticeDate', today.getDate()+'/'+MN[today.getMonth()]+'/'+today.getFullYear());
-    }
-
-    let saved = localStorage.getItem('creditExtra');
-    if (saved !== null) document.getElementById('extra').value = saved;
-
-    let dailyInt = bal * r / 30;
-    startTicker(dailyInt);
-    s('dailyInt', cop(dailyInt)+'/día');
-
-    let nextInt = bal * r, nextCap = REF.payment - nextInt;
-    s('nextCapital', cop(nextCap));
+    s('badgePaid', 'Cuotas: '+REF.paid+' de '+REF.totalTerm+' pagadas');
     s('daysStat', Math.floor((today - FIRST_PMT)/86400000).toLocaleString('es-CO')+'d');
 
-    renderMilestones(paidNow);
+    if (bal > 0 && ann > 0) {
+        let dailyInt = bal * r / 30;
+        startTicker(dailyInt);
+        s('dailyInt', cop(dailyInt)+'/día');
+        if (pmt > 0) s('nextCapital', cop(pmt - bal * r));
+    } else {
+        startTicker(0);
+    }
+
+    renderMilestones(REF.paid);
     quickCalc();
 }
 
 function quickCalc() {
-    let bal   = parseFloat(document.getElementById('balance').value) || REF.balance;
-    let pmt   = parseFloat(document.getElementById('installment').value) || REF.payment;
-    let ann   = parseFloat(document.getElementById('annualRate').value) || REF.annualRate;
+    let bal   = parseFloat(document.getElementById('balance').value)     || 0;
+    let pmt   = parseFloat(document.getElementById('installment').value) || 0;
+    let ann   = parseFloat(document.getElementById('annualRate').value)  || 0;
     let rate  = ann / 12 / 100;
-    let extra = parseFloat(document.getElementById('extra').value) || 0;
-    let nd    = document.getElementById('nextPaymentDate').value || '2026-06-05';
+    let extra = parseFloat(document.getElementById('extra').value)       || 0;
+    let nd    = document.getElementById('nextPaymentDate').value         || '';
+    if (!bal || !pmt || !ann || !nd) return;
 
     let norm = simulate(bal, pmt, rate, 0);
     let withE = simulate(bal, pmt, rate, extra);
@@ -530,6 +538,7 @@ function quickCalc() {
 
     let nextInt = bal * rate, nextCap = pmt - nextInt;
     document.getElementById('insightBox').classList.remove('d-none');
+    s('insPmt',      cop(pmt));
     s('insCapital',  cop(nextCap));
     s('insInterest', cop(nextInt));
     s('insExtra',    cop(extra));
@@ -580,7 +589,11 @@ function calculate() {
     let nd    = document.getElementById('nextPaymentDate').value;
 
     document.getElementById('mrdisplay').textContent = (rate*100).toFixed(4);
-    localStorage.setItem('creditExtra', extra);
+    localStorage.setItem('lf_balance',  bal);
+    localStorage.setItem('lf_payment',  pmt);
+    localStorage.setItem('lf_rate',     ann);
+    localStorage.setItem('lf_nextDate', nd);
+    localStorage.setItem('lf_extra',    extra);
 
     let norm = simulate(bal, pmt, rate, 0);
     let withE = simulate(bal, pmt, rate, extra);
@@ -611,7 +624,7 @@ function calculate() {
     res.scrollIntoView({ behavior: 'smooth' });
 }
 
-function saveExtra() { localStorage.setItem('creditExtra', document.getElementById('extra').value||0); }
+function saveExtra() { localStorage.setItem('lf_extra', document.getElementById('extra').value||0); }
 
 function renderChart(bal0, normRows, exRows, nd) {
     let labels = [fmy(addMonths(nd,-1))], dn = [bal0], de = [bal0];
@@ -671,13 +684,12 @@ function renderAmort(rows, nd, pmt) {
 
 function onBalanceChanged() {
     let bal  = parseFloat(document.getElementById('balance').value) || 0;
-    let ann  = parseFloat(document.getElementById('annualRate').value) || REF.annualRate;
-    let pmt  = parseFloat(document.getElementById('installment').value) || REF.payment;
+    let ann  = parseFloat(document.getElementById('annualRate').value)  || 0;
+    let pmt  = parseFloat(document.getElementById('installment').value) || 0;
     let rate = ann / 12 / 100;
 
-    // Si el usuario escribe su propio saldo, ocultar el aviso de estimación
     document.getElementById('estimatedNotice').classList.add('d-none');
-
+    if (bal > 0) localStorage.setItem('lf_balance', bal);
     if (bal <= 0) return;
 
     // Reiniciar ticker con el nuevo saldo
