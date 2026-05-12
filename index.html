@@ -4,400 +4,560 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Libertad Financiera</title>
-
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0055ff">
+    <meta name="theme-color" content="#07071a">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Mi Crédito">
+    <meta name="apple-mobile-web-app-title" content="Libertad">
     <link rel="icon" href="icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="icon.svg">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        body { background: #f4f4f4; font-family: 'Helvetica', sans-serif; }
-        .bauhaus-card { border: 5px solid #000; border-radius: 0; background: #fff; box-shadow: 15px 15px 0 #ff0000; }
-        .header-box { background: #0055ff; color: #fff; padding: 20px; border-bottom: 5px solid #000; }
-        .info-badge { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); padding: 3px 9px; border-radius: 3px; font-size: .82rem; font-weight: 600; }
-        .btn-bauhaus { background: #ffcc00; color: #000; font-weight: 700; border: 3px solid #000; border-radius: 0; }
-        .btn-bauhaus:hover { background: #000; color: #ffcc00; }
+        :root {
+            --bg:          #07071a;
+            --bg1:         #0d0d24;
+            --glass:       rgba(255,255,255,0.04);
+            --border:      rgba(255,255,255,0.07);
+            --border2:     rgba(255,255,255,0.13);
+            --text:        #f1f5f9;
+            --text2:       #94a3b8;
+            --text3:       #475569;
+            --accent:      #818cf8;
+            --accent-glow: rgba(129,140,248,0.25);
+            --green:       #34d399;
+            --green-glow:  rgba(52,211,153,0.25);
+            --red:         #fb7185;
+            --red-glow:    rgba(251,113,133,0.25);
+            --gold:        #fbbf24;
+            --gold-glow:   rgba(251,191,36,0.3);
+            --r:           14px;
+            --r-sm:        10px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { overflow-x: hidden; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(ellipse 80% 40% at 50% -5%, rgba(129,140,248,0.13) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 30% at 90% 70%, rgba(52,211,153,0.05) 0%, transparent 60%);
+        }
+        .d-none { display: none !important; }
+        .text-end { text-align: right; }
 
-        /* HERO */
-        .hero { background: #111; color: #fff; padding: 28px; border-bottom: 5px solid #ffcc00; }
-        .ring-wrap { position: relative; width: 170px; height: 170px; }
-        .ring-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; pointer-events: none; }
-        .ring-pct { font-size: 2rem; font-weight: 900; color: #ffcc00; line-height: 1; }
-        .ring-sub { font-size: .7rem; color: #aaa; }
-        .freedom-col { border-left: 2px solid #333; padding-left: 20px; }
-        .freedom-col.accent { border-color: #ffcc00; }
-        .freedom-label { font-size: .72rem; letter-spacing: 2px; text-transform: uppercase; color: #888; }
-        .freedom-date { font-size: 2rem; font-weight: 900; line-height: 1.1; }
-        .freedom-date.accent { color: #ffcc00; }
-        .cap-bar-bg { height: 8px; background: #333; border-radius: 2px; margin-top: 4px; }
-        .cap-bar-fill { height: 100%; background: #ffcc00; border-radius: 2px; transition: width 1.2s ease; }
+        /* ── APP WRAPPER ── */
+        #app { max-width: 880px; margin: 0 auto; padding: 16px 14px 48px; }
 
-        /* TICKER */
-        .ticker { background: #cc0000; color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
-        .ticker-label { font-size: .75rem; letter-spacing: 2px; text-transform: uppercase; opacity: .8; }
-        .ticker-val { font-size: 2rem; font-weight: 900; font-variant-numeric: tabular-nums; min-width: 200px; }
-        .stat-pill { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; padding: 6px 14px; text-align: center; }
-        .stat-pill-val { font-size: 1.2rem; font-weight: 900; }
-        .stat-pill-lbl { font-size: .68rem; text-transform: uppercase; letter-spacing: 1px; opacity: .75; }
+        /* ── HEADER ── */
+        .app-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 0 20px; gap: 12px;
+        }
+        .app-logo {
+            font-size: 1rem; font-weight: 700; letter-spacing: -.02em;
+            background: linear-gradient(120deg, var(--accent), var(--green));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .app-badge {
+            font-size: .7rem; font-weight: 600; color: var(--text2);
+            background: var(--glass); border: 1px solid var(--border2);
+            padding: 5px 12px; border-radius: 100px; white-space: nowrap;
+        }
 
-        /* MILESTONES */
-        .ms-section { padding: 22px 28px; background: #fafafa; border-bottom: 4px solid #000; }
-        .ms-track { position: relative; height: 6px; background: #ddd; border-radius: 3px; margin: 18px 0 10px; }
-        .ms-fill { height: 100%; background: linear-gradient(to right, #000, #0055ff); border-radius: 3px; transition: width 1.4s ease; }
-        .ms-row { display: flex; justify-content: space-between; }
-        .ms-item { display: flex; flex-direction: column; align-items: center; width: 18%; position: relative; }
-        .ms-dot { width: 38px; height: 38px; border-radius: 50%; border: 4px solid; display: flex; align-items: center; justify-content: center; font-size: .9rem; font-weight: 700; margin-top: -22px; z-index: 2; background: #fff; }
-        .ms-dot.done     { background: #000; border-color: #000; color: #fff; }
-        .ms-dot.active   { background: #ffcc00; border-color: #000; color: #000; animation: pulse 2s infinite; }
-        .ms-dot.upcoming { border-color: #ccc; color: #ccc; }
-        .ms-lbl  { font-size: .78rem; font-weight: 700; margin-top: 6px; text-align: center; }
-        .ms-date { font-size: .68rem; color: #888; text-align: center; }
-        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,204,0,.6)} 50%{box-shadow:0 0 0 10px rgba(255,204,0,0)} }
+        /* ── HERO GRID ── */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 12px; margin-bottom: 12px; align-items: stretch;
+        }
 
-        /* RESULTS */
-        .scenario-normal { border-left: 7px solid #dc3545; padding: 15px; background: #fff5f5; }
-        .scenario-extra  { border-left: 7px solid #198754; padding: 15px; background: #f0fff4; }
-        .savings-box { background: #ffcc00; border: 4px solid #000; padding: 20px; }
-        .estimated-notice { background: #fff3cd; border: 2px solid #ffc107; padding: 10px 15px; font-size: .9rem; }
-        table.amort td, table.amort th { padding: 4px 10px; font-size: .82rem; }
-        table.amort tr:nth-child(even) { background: #f8f9fa; }
-        .sc-table td, .sc-table th { padding: 8px 14px; }
-        .sc-hl { background: #fff9c4 !important; font-weight: 700; }
-        .sc-base { background: #fff5f5; }
+        /* Ring card */
+        .ring-card {
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: var(--r); padding: 20px 16px;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .ring-wrap { position: relative; width: 140px; height: 140px; }
+        .ring-center {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%); text-align: center; pointer-events: none;
+        }
+        .ring-pct  { font-size: 1.9rem; font-weight: 700; color: var(--gold); line-height: 1; letter-spacing: -.03em; }
+        .ring-sub  { font-size: .58rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        .ring-motiv { font-size: .72rem; font-weight: 600; color: var(--gold); text-align: center; min-height: 1em; }
 
-        /* INSIGHT CARD */
-        .insight { background: #0055ff; color: #fff; border: 3px solid #000; padding: 14px 18px; }
-        .insight strong { color: #ffcc00; }
+        /* Metrics 2×2 */
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .metric-card {
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: var(--r-sm); padding: 12px 14px;
+            position: relative; overflow: hidden;
+        }
+        .metric-card::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            border-radius: var(--r-sm) var(--r-sm) 0 0;
+        }
+        .m-normal::after { background: var(--red); }
+        .m-extra::after  { background: var(--green); }
+        .m-saved::after  { background: var(--accent); }
+        .m-capital::after { background: var(--gold); }
+        .metric-lbl { font-size: .58rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 3px; }
+        .metric-val { font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+        .metric-sub { font-size: .68rem; color: var(--text2); margin-top: 2px; }
+        .m-normal .metric-val { color: var(--red); }
+        .m-extra  .metric-val { color: var(--green); }
+        .m-saved  .metric-val { color: var(--accent); }
+        .m-capital .metric-val { color: var(--gold); }
+        .cap-bar-bg   { height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; margin-top: 6px; }
+        .cap-bar-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 1.2s ease; }
 
-        /* ═══ MOBILE ═══ */
-        @media (max-width: 767.98px) {
-            body { overflow-x: hidden; }
+        /* ── TICKER ── */
+        .ticker-bar {
+            background: var(--bg1); border: 1px solid var(--border);
+            border-radius: var(--r); padding: 14px 18px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 14px; flex-wrap: wrap; margin-bottom: 12px;
+            position: relative; overflow: hidden;
+        }
+        .ticker-bar::before {
+            content: ''; position: absolute; top: 0; left: 0; bottom: 0;
+            width: 3px; background: var(--red); box-shadow: 0 0 14px var(--red-glow);
+        }
+        .ticker-main { padding-left: 6px; }
+        .ticker-label { font-size: .58rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); }
+        .ticker-val {
+            font-size: 1.8rem; font-weight: 700; letter-spacing: -.03em;
+            color: var(--red); font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 18px var(--red-glow);
+        }
+        .ticker-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+        .stat-pill {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: var(--r-sm); padding: 7px 12px; text-align: center; min-width: 80px;
+        }
+        .stat-pill-val { font-size: .95rem; font-weight: 700; color: var(--text); }
+        .stat-pill-lbl { font-size: .56rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-top: 1px; }
 
-            /* Card: sin sombra lateral — evita el desborde rojo */
-            .bauhaus-card {
-                box-shadow: 0 6px 0 #ff0000;
-                border-left: none;
-                border-right: none;
-                border-radius: 0;
-            }
+        /* ── MILESTONES ── */
+        .ms-section {
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: var(--r); padding: 16px 18px; margin-bottom: 12px;
+        }
+        .ms-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .ms-title   { font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); }
+        .ms-caption { font-size: .7rem; color: var(--accent); font-weight: 600; }
+        .ms-track   { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; }
+        .ms-fill    { height: 100%; background: linear-gradient(to right, var(--accent), var(--green)); border-radius: 2px; transition: width 1.4s ease; }
+        .ms-row     { display: flex; justify-content: space-between; margin-top: 2px; }
+        .ms-item    { display: flex; flex-direction: column; align-items: center; width: 18%; }
+        .ms-dot {
+            width: 24px; height: 24px; border-radius: 50%; border: 2px solid;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .6rem; font-weight: 700; margin-top: -13px; z-index: 2;
+            background: var(--bg);
+        }
+        .ms-dot.done     { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 8px var(--accent-glow); }
+        .ms-dot.active   { background: var(--gold); border-color: var(--gold); color: #000; box-shadow: 0 0 12px var(--gold-glow); animation: pulse 2s infinite; }
+        .ms-dot.upcoming { border-color: rgba(255,255,255,0.1); color: var(--text3); }
+        .ms-lbl  { font-size: .6rem; font-weight: 600; margin-top: 4px; color: var(--text2); text-align: center; }
+        .ms-date { font-size: .52rem; color: var(--text3); text-align: center; }
+        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 var(--gold-glow)} 50%{box-shadow:0 0 0 7px rgba(251,191,36,0)} }
 
-            /* Contenedor edge-to-edge */
-            .container { padding-left: 0 !important; padding-right: 0 !important; }
-            .col-lg-10 { padding-left: 0; padding-right: 0; }
+        /* ── NOTICES ── */
+        .notice-bar {
+            background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.18);
+            border-radius: var(--r-sm); padding: 10px 16px; font-size: .82rem;
+            color: var(--gold); margin-bottom: 12px;
+        }
 
-            /* Header */
-            .header-box { padding: 12px 16px; }
-            .header-box h2 { font-size: .85rem; letter-spacing: 0; }
-            .info-badge { font-size: .72rem; padding: 2px 7px; }
+        /* ── FORM ── */
+        .form-card {
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: var(--r); padding: 20px; margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: .62rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--text3);
+            padding-bottom: 14px; margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group.span2 { grid-column: span 2; }
+        .form-group.full  { grid-column: 1 / -1; }
+        .form-label { font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); }
+        .form-label.hi { color: var(--green); }
+        .form-control {
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border2);
+            border-radius: var(--r-sm); color: var(--text);
+            font-family: 'Space Grotesk', sans-serif; font-size: .9rem; font-weight: 500;
+            padding: 10px 12px; outline: none; width: 100%;
+            transition: border-color .2s, box-shadow .2s; -webkit-appearance: none; appearance: none;
+        }
+        .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .form-hint { font-size: .62rem; color: var(--text3); }
+        .form-hint strong { color: var(--text2); }
+        .btn-analyze {
+            width: 100%; padding: 13px;
+            background: linear-gradient(135deg, #6d28d9 0%, #3b82f6 100%);
+            border: none; border-radius: var(--r-sm); color: #fff;
+            font-family: 'Space Grotesk', sans-serif; font-size: .95rem;
+            font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+            cursor: pointer; transition: opacity .2s, transform .1s;
+            box-shadow: 0 4px 20px rgba(109,40,217,0.45);
+        }
+        .btn-analyze:hover  { opacity: .88; }
+        .btn-analyze:active { transform: scale(.98); }
 
-            /* Hero */
-            .hero { padding: 16px; }
-            .freedom-date { font-size: 1.3rem; }
-            .freedom-label { font-size: .57rem; letter-spacing: 1px; }
-            .freedom-col { padding-left: 14px; }
-            #heroSavedM { font-size: 1.35rem !important; }
+        /* ── INSIGHT ── */
+        .insight-card {
+            background: rgba(129,140,248,0.06); border: 1px solid rgba(129,140,248,0.18);
+            border-radius: var(--r); padding: 16px 18px; font-size: .86rem;
+            line-height: 1.65; color: var(--text2); margin-bottom: 16px;
+        }
+        .insight-card strong { color: var(--accent); }
+        .insight-eyebrow { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 6px; }
 
-            /* Ticker: apilar en columna */
-            .ticker { flex-direction: column; align-items: stretch; padding: 12px 16px; gap: 10px; }
-            .ticker-label { font-size: .62rem; }
-            .ticker-val { font-size: 1.55rem; min-width: unset; }
-            .ticker > div:last-child { margin-left: 0 !important; width: 100%; }
-            .stat-pill { flex: 1; padding: 5px 8px; }
-            .stat-pill-val { font-size: .95rem; }
-            .stat-pill-lbl { font-size: .57rem; }
+        /* ── RESULTS ── */
+        .section-divider {
+            font-size: .6rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--text3);
+            display: flex; align-items: center; gap: 10px; margin: 20px 0 12px;
+        }
+        .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-            /* Milestones */
-            .ms-section { padding: 12px 16px 16px; }
-            .ms-dot { width: 28px; height: 28px; font-size: .68rem; border-width: 3px; margin-top: -16px; }
-            .ms-lbl { font-size: .62rem; }
-            .ms-date { font-size: .55rem; }
+        .scenarios-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .scenario-card {
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: var(--r); padding: 16px; position: relative; overflow: hidden;
+        }
+        .scenario-card::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        }
+        .sc-normal::after { background: var(--red); }
+        .sc-extra::after  { background: var(--green); }
+        .sc-head { font-size: .6rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 12px; }
+        .sc-normal .sc-head { color: var(--red); }
+        .sc-extra  .sc-head { color: var(--green); }
+        .sc-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; font-size: .8rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .sc-row:last-child { border: none; }
+        .sc-row-lbl { color: var(--text3); }
+        .sc-row-val { font-weight: 700; color: var(--text); }
 
-            /* Card body */
-            .card-body { padding: 16px !important; }
-            .scenario-normal, .scenario-extra { padding: 12px; }
-            .savings-box { padding: 14px; }
-            .savings-box .fs-2 { font-size: 1.35rem !important; }
-            .insight { font-size: .83rem; padding: 12px 14px; }
+        .savings-card {
+            background: linear-gradient(135deg, rgba(109,40,217,.13), rgba(59,130,246,.08));
+            border: 1px solid rgba(129,140,248,.2);
+            border-radius: var(--r); padding: 18px 20px; margin-bottom: 12px;
+        }
+        .savings-eyebrow { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 14px; }
+        .savings-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; }
+        .sv-val { font-size: 1.5rem; font-weight: 700; letter-spacing: -.02em; line-height: 1; }
+        .sv-lbl { font-size: .68rem; color: var(--text2); margin-top: 4px; }
+        .sv-sub { font-size: .62rem; color: var(--text3); margin-top: 2px; }
 
-            /* Tablas: nowrap evita que los montos partan en 2 líneas */
-            table.amort td, table.amort th {
-                padding: 5px 8px;
-                font-size: .75rem;
-                white-space: nowrap;
-            }
-            .sc-table td, .sc-table th {
-                padding: 6px 10px;
-                font-size: .8rem;
-                white-space: nowrap;
-            }
+        .progress-wrap { margin: 12px 0 16px; }
+        .prog-bg   { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+        .prog-fill { height: 100%; background: linear-gradient(to right, var(--accent), var(--green)); border-radius: 3px; transition: width .8s ease; }
+        .prog-lbl  { font-size: .68rem; color: var(--text3); margin-top: 5px; }
 
-            /* Títulos de secciones */
-            h4.text-uppercase { font-size: 1rem; }
-            h5.text-uppercase { font-size: .9rem; }
+        .chart-card {
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: var(--r); padding: 18px; margin-bottom: 12px;
+        }
+        .chart-wrap { position: relative; height: 220px; }
+
+        .table-card {
+            background: var(--glass); border: 1px solid var(--border);
+            border-radius: var(--r); overflow: hidden; margin-bottom: 12px;
+        }
+        .table-scroll { overflow-x: auto; overflow-y: auto; max-height: 260px; -webkit-overflow-scrolling: touch; }
+        table.pro-table { width: 100%; border-collapse: collapse; }
+        table.pro-table th {
+            padding: 9px 12px; font-size: .62rem; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text3); font-weight: 600; white-space: nowrap;
+            background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);
+            position: sticky; top: 0;
+        }
+        table.pro-table td {
+            padding: 8px 12px; font-size: .78rem; color: var(--text2);
+            border-bottom: 1px solid rgba(255,255,255,0.03); white-space: nowrap;
+        }
+        table.pro-table tr:last-child td { border-bottom: none; }
+        table.pro-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .c-red    { color: var(--red)    !important; font-weight: 600; }
+        .c-green  { color: var(--green)  !important; font-weight: 600; }
+        .c-gold   { color: var(--gold)   !important; font-weight: 600; }
+        .c-accent { color: var(--accent) !important; }
+        .c-bold   { color: var(--text)   !important; font-weight: 700; }
+        .row-hl   { background: rgba(129,140,248,0.07) !important; }
+        .row-base { background: rgba(251,113,133,0.04) !important; }
+        .badge-act {
+            background: rgba(129,140,248,0.18); color: var(--accent);
+            font-size: .58rem; padding: 2px 7px; border-radius: 4px; font-weight: 700;
+            margin-left: 4px; vertical-align: middle;
+        }
+
+        /* ── RESPONSIVE MOBILE ── */
+        @media (max-width: 600px) {
+            #app { padding: 12px 10px 40px; }
+            .hero-grid { grid-template-columns: 1fr; }
+            .ring-card { flex-direction: row; gap: 16px; padding: 16px; }
+            .ring-wrap { width: 110px; height: 110px; flex-shrink: 0; }
+            .ring-wrap svg { width: 110px !important; height: 110px !important; }
+            .ring-pct { font-size: 1.5rem; }
+            .metrics-grid { flex: 1; }
+            .ticker-bar { flex-direction: column; align-items: flex-start; }
+            .ticker-val { font-size: 1.5rem; }
+            .ticker-pills { width: 100%; }
+            .stat-pill { flex: 1; min-width: 0; }
+            .form-grid { grid-template-columns: 1fr 1fr; }
+            .form-group.span2 { grid-column: span 2; }
+            .scenarios-grid { grid-template-columns: 1fr; }
+            .savings-stats { grid-template-columns: 1fr; text-align: left; gap: 8px; }
+        }
+        @media (max-width: 380px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.span2 { grid-column: auto; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
 <body>
-<div class="container py-2 py-md-5">
- <div class="row justify-content-center">
-  <div class="col-lg-10">
-   <div class="bauhaus-card">
+<div id="app">
 
     <!-- HEADER -->
-    <div class="header-box">
-      <h2 class="text-uppercase m-0">Proyecto Credito</h2>
-      <div class="mt-2 d-flex flex-wrap gap-2">
-        <span class="info-badge" id="badgePaid">Cuotas: …</span>
-      </div>
-    </div>
+    <header class="app-header">
+        <div class="app-logo">◆ Libertad Financiera</div>
+        <div class="app-badge" id="badgePaid">Cuotas: …</div>
+    </header>
 
     <!-- HERO -->
-    <div class="hero">
-      <div class="row align-items-center g-4">
-
-        <!-- Ring -->
-        <div class="col-md-3 text-center">
-          <div class="ring-wrap mx-auto">
-            <svg width="170" height="170" style="transform:rotate(-90deg)">
-              <circle cx="85" cy="85" r="72" fill="none" stroke="#2a2a2a" stroke-width="16"/>
-              <circle id="ringFg" cx="85" cy="85" r="72" fill="none" stroke="#ffcc00" stroke-width="16"
-                      stroke-linecap="round" stroke-dasharray="0 452.4"/>
-            </svg>
-            <div class="ring-center">
-              <div class="ring-pct" id="ringPct">0%</div>
-              <div class="ring-sub" id="ringSub">del plazo</div>
+    <div class="hero-grid">
+        <div class="ring-card">
+            <div class="ring-wrap">
+                <svg width="140" height="140" style="transform:rotate(-90deg)">
+                    <defs>
+                        <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#f59e0b"/>
+                            <stop offset="100%" stop-color="#fbbf24"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12"/>
+                    <circle id="ringFg" cx="70" cy="70" r="58" fill="none" stroke="url(#rg)" stroke-width="12"
+                            stroke-linecap="round" stroke-dasharray="0 364.4"
+                            style="filter:drop-shadow(0 0 8px rgba(251,191,36,.55))"/>
+                </svg>
+                <div class="ring-center">
+                    <div class="ring-pct" id="ringPct">0%</div>
+                    <div class="ring-sub" id="ringSub">del plazo</div>
+                </div>
             </div>
-          </div>
-          <div id="motivMsg" style="color:#ffcc00;font-weight:700;font-size:.9rem;margin-top:8px;"></div>
+            <div class="ring-motiv" id="motivMsg"></div>
         </div>
 
-        <!-- Freedom dates -->
-        <div class="col-md-5 d-flex gap-4">
-          <div>
-            <div class="freedom-label">Sin abono extra</div>
-            <div class="freedom-date" id="heroNormalDate">—</div>
-            <div style="color:#888;font-size:.85rem;" id="heroNormalM"></div>
-          </div>
-          <div class="freedom-col accent">
-            <div class="freedom-label" style="color:#ffcc00;">Con abono extra</div>
-            <div class="freedom-date accent" id="heroExtraDate">—</div>
-            <div style="color:#aaa;font-size:.85rem;" id="heroExtraM"></div>
-          </div>
+        <div class="metrics-grid">
+            <div class="metric-card m-normal">
+                <div class="metric-lbl">Sin abono</div>
+                <div class="metric-val" id="heroNormalDate">—</div>
+                <div class="metric-sub" id="heroNormalM"></div>
+            </div>
+            <div class="metric-card m-extra">
+                <div class="metric-lbl">Con abono</div>
+                <div class="metric-val" id="heroExtraDate">—</div>
+                <div class="metric-sub" id="heroExtraM"></div>
+            </div>
+            <div class="metric-card m-saved">
+                <div class="metric-lbl">Ahorro total</div>
+                <div class="metric-val" id="heroSavedM">—</div>
+                <div class="metric-sub" id="heroSavedI"></div>
+            </div>
+            <div class="metric-card m-capital">
+                <div class="metric-lbl">Capital saldado</div>
+                <div class="metric-val" id="heroCapPct">—</div>
+                <div class="cap-bar-bg"><div class="cap-bar-fill" id="heroCapBar" style="width:0%"></div></div>
+                <div class="metric-sub" id="heroCapAmt" style="margin-top:4px"></div>
+            </div>
         </div>
-
-        <!-- Impact + capital -->
-        <div class="col-md-4">
-          <div style="border:2px solid #ffcc00;padding:14px;border-radius:2px;">
-            <div style="font-size:.7rem;letter-spacing:2px;color:#ffcc00;text-transform:uppercase;">Ahorro con el abono</div>
-            <div style="font-size:1.9rem;font-weight:900;" id="heroSavedM">—</div>
-            <div style="color:#aaa;font-size:.9rem;" id="heroSavedI">menos de deuda</div>
-            <hr style="border-color:#333;margin:10px 0;">
-            <div style="font-size:.72rem;color:#888;text-transform:uppercase;">Capital saldado</div>
-            <div style="font-size:1.3rem;font-weight:900;" id="heroCapPct">—</div>
-            <div class="cap-bar-bg"><div class="cap-bar-fill" id="heroCapBar" style="width:0%"></div></div>
-            <div style="font-size:.72rem;color:#555;margin-top:4px;" id="heroCapAmt"></div>
-          </div>
-        </div>
-
-      </div>
     </div>
 
     <!-- TICKER -->
-    <div class="ticker">
-      <div>
-        <div class="ticker-label">Intereses acumulados desde que abriste esta página</div>
-        <div class="ticker-val" id="tickerVal">$ 0,00</div>
-      </div>
-      <div class="ms-auto d-flex gap-3 flex-wrap">
-        <div class="stat-pill">
-          <div class="stat-pill-val" id="dailyInt">—</div>
-          <div class="stat-pill-lbl">interés / día</div>
+    <div class="ticker-bar">
+        <div class="ticker-main">
+            <div class="ticker-label">Intereses generados desde que abriste esta página</div>
+            <div class="ticker-val" id="tickerVal">$ 0,00</div>
         </div>
-        <div class="stat-pill">
-          <div class="stat-pill-val" id="nextCapital">—</div>
-          <div class="stat-pill-lbl">próx. cuota → capital</div>
+        <div class="ticker-pills">
+            <div class="stat-pill">
+                <div class="stat-pill-val" id="dailyInt">—</div>
+                <div class="stat-pill-lbl">Interés / día</div>
+            </div>
+            <div class="stat-pill">
+                <div class="stat-pill-val" id="nextCapital">—</div>
+                <div class="stat-pill-lbl">Próx. → capital</div>
+            </div>
+            <div class="stat-pill">
+                <div class="stat-pill-val" id="daysStat">—</div>
+                <div class="stat-pill-lbl">Días activo</div>
+            </div>
         </div>
-        <div class="stat-pill">
-          <div class="stat-pill-val" id="daysStat">—</div>
-          <div class="stat-pill-lbl">días en el crédito</div>
-        </div>
-      </div>
     </div>
 
     <!-- MILESTONES -->
     <div class="ms-section">
-      <div class="d-flex justify-content-between align-items-center mb-1">
-        <h6 class="text-uppercase fw-bold m-0" style="letter-spacing:2px;">Tu recorrido</h6>
-        <small id="msCaption" class="text-muted"></small>
-      </div>
-      <div class="ms-track"><div class="ms-fill" id="msFill" style="width:0%"></div></div>
-      <div class="ms-row" id="msRow"></div>
+        <div class="ms-header">
+            <span class="ms-title">Tu recorrido</span>
+            <span class="ms-caption" id="msCaption"></span>
+        </div>
+        <div class="ms-track"><div class="ms-fill" id="msFill" style="width:0%"></div></div>
+        <div class="ms-row" id="msRow"></div>
     </div>
 
-    <div class="card-body p-4">
+    <!-- NOTICE (hidden by default) -->
+    <div id="estimatedNotice" class="notice-bar d-none">
+        ⚠ Saldo estimado al <span id="noticeDate"></span>. Verifica con tu banco.
+    </div>
 
-      <!-- AVISO -->
-      <div id="estimatedNotice" class="estimated-notice mb-3 d-none">
-        <strong>Actualización automática:</strong> Saldo estimado por amortización al <span id="noticeDate"></span>.
-        Verifica con tu app bancaria y corrige si difiere.
-      </div>
-
-      <!-- INPUTS -->
-      <h5 class="text-uppercase fw-bold border-bottom border-dark pb-2">Parámetros del crédito</h5>
-      <div class="row g-3 mb-4">
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Saldo actual ($)</label>
-          <input type="number" id="balance" class="form-control border-dark"
-                 oninput="onBalanceChanged()">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Cuota mensual ($)</label>
-          <input type="number" id="installment" class="form-control border-dark"
-                 oninput="saveConfig()">
-        </div>
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Tasa nominal anual (%)</label>
-          <input type="number" id="annualRate" class="form-control border-dark" step="0.01"
-                 oninput="saveConfig();onBalanceChanged()">
-          <small class="text-muted">Mensual: <strong><span id="mrdisplay">0.9900</span>%</strong></small>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label fw-bold">Fecha próximo pago</label>
-          <input type="date" id="nextPaymentDate" class="form-control border-dark"
-                 oninput="saveConfig()">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label fw-bold text-danger">Abono extra a capital ($/mes)</label>
-          <input type="number" id="extra" class="form-control border-dark bg-light"
-                 oninput="saveExtra();quickCalc()">
-          <small class="text-muted">Reduce el plazo — la cuota mensual no cambia</small>
-        </div>
-        <div class="col-md-6 d-flex align-items-center">
-          <button onclick="calculate()" class="btn btn-bauhaus w-100 py-3 text-uppercase fs-5">
-            Ver análisis completo
-          </button>
-        </div>
-      </div>
-
-      <!-- INSIGHT -->
-      <div id="insightBox" class="insight mb-4 d-none">
-        <strong>Dato clave:</strong> De tu próxima cuota de <strong id="insPmt">—</strong>,
-        solo <strong id="insCapital">—</strong> va a reducir deuda.
-        Los otros <strong id="insInterest">—</strong> son intereses — dinero que no recuperas.
-        Con un abono extra de <strong id="insExtra">—</strong> adicional,
-        adelantas <strong id="insMonths">—</strong> cuotas de una vez.
-      </div>
-
-      <!-- RESULTADOS -->
-      <div id="results" class="d-none">
-        <hr class="border-dark border-2">
-        <h4 class="text-uppercase fw-bold mb-3">Análisis completo</h4>
-
-        <div class="row g-3">
-          <div class="col-md-6">
-            <div class="scenario-normal">
-              <h6 class="text-uppercase fw-bold text-danger mb-3">Sin abono extra</h6>
-              <table class="w-100">
-                <tr><td>Cuotas restantes</td><td class="text-end fw-bold" id="nMonths">--</td></tr>
-                <tr><td>Último pago</td><td class="text-end fw-bold" id="nEnd">--</td></tr>
-                <tr><td>Intereses restantes</td><td class="text-end fw-bold" id="nInt">--</td></tr>
-                <tr><td>Total a pagar</td><td class="text-end fw-bold" id="nTotal">--</td></tr>
-              </table>
+    <!-- FORM -->
+    <div class="form-card">
+        <div class="section-title">Parámetros del crédito</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Saldo actual ($)</label>
+                <input type="number" id="balance" class="form-control" placeholder="0"
+                       oninput="onBalanceChanged()">
             </div>
-          </div>
-          <div class="col-md-6">
-            <div class="scenario-extra">
-              <h6 class="text-uppercase fw-bold text-success mb-3">Con abono extra</h6>
-              <table class="w-100">
-                <tr><td>Cuotas restantes</td><td class="text-end fw-bold" id="eMonths">--</td></tr>
-                <tr><td>Último pago</td><td class="text-end fw-bold" id="eEnd">--</td></tr>
-                <tr><td>Intereses restantes</td><td class="text-end fw-bold" id="eInt">--</td></tr>
-                <tr><td>Total a pagar</td><td class="text-end fw-bold" id="eTotal">--</td></tr>
-              </table>
+            <div class="form-group">
+                <label class="form-label">Cuota mensual ($)</label>
+                <input type="number" id="installment" class="form-control" placeholder="0"
+                       oninput="saveConfig()">
             </div>
-          </div>
-        </div>
-
-        <div class="savings-box mt-4">
-          <h5 class="text-uppercase fw-bold mb-3">Tu ahorro real</h5>
-          <div class="row text-center g-3">
-            <div class="col-md-4">
-              <div class="fs-2 fw-bold" id="sSaved">--</div>
-              <div class="fw-bold">cuotas menos</div>
+            <div class="form-group">
+                <label class="form-label">Monto original ($)</label>
+                <input type="number" id="originalAmt" class="form-control" placeholder="0"
+                       oninput="saveConfig()">
             </div>
-            <div class="col-md-4">
-              <div class="fs-2 fw-bold text-success" id="sInt">--</div>
-              <div class="fw-bold">intereses ahorrados</div>
+            <div class="form-group">
+                <label class="form-label">Tasa nominal anual (%)</label>
+                <input type="number" id="annualRate" class="form-control" placeholder="0.00" step="0.01"
+                       oninput="saveConfig();onBalanceChanged()">
+                <span class="form-hint">Mensual: <strong><span id="mrdisplay">0.0000</span>%</strong></span>
             </div>
-            <div class="col-md-4">
-              <div class="fs-2 fw-bold text-primary" id="sFreedom">--</div>
-              <div class="fw-bold">fecha de libertad</div>
-              <small id="sFreedomDiff"></small>
+            <div class="form-group">
+                <label class="form-label">Fecha próximo pago</label>
+                <input type="date" id="nextPaymentDate" class="form-control"
+                       oninput="saveConfig()">
             </div>
-          </div>
+            <div class="form-group">
+                <label class="form-label hi">Abono extra ($/mes)</label>
+                <input type="number" id="extra" class="form-control" placeholder="0"
+                       oninput="saveExtra();quickCalc()">
+                <span class="form-hint">Adelanta cuotas sin cambiar la cuota fija</span>
+            </div>
+            <div class="form-group full">
+                <button onclick="calculate()" class="btn-analyze">Ver análisis completo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- INSIGHT -->
+    <div id="insightBox" class="insight-card d-none">
+        <div class="insight-eyebrow">Dato clave</div>
+        De tu próxima cuota de <strong id="insPmt">—</strong>,
+        solo <strong id="insCapital">—</strong> reduce deuda.
+        Los otros <strong id="insInterest">—</strong> son intereses puros.
+        Con un abono extra de <strong id="insExtra">—</strong>,
+        adelantas <strong id="insMonths">—</strong> cuotas.
+    </div>
+
+    <!-- RESULTS -->
+    <div id="results" class="d-none">
+
+        <div class="section-divider">Escenarios</div>
+        <div class="scenarios-grid">
+            <div class="scenario-card sc-normal">
+                <div class="sc-head">Sin abono extra</div>
+                <div class="sc-row"><span class="sc-row-lbl">Cuotas restantes</span><span class="sc-row-val" id="nMonths">--</span></div>
+                <div class="sc-row"><span class="sc-row-lbl">Último pago</span><span class="sc-row-val" id="nEnd">--</span></div>
+                <div class="sc-row"><span class="sc-row-lbl">Intereses restantes</span><span class="sc-row-val c-red" id="nInt">--</span></div>
+                <div class="sc-row"><span class="sc-row-lbl">Total a pagar</span><span class="sc-row-val c-bold" id="nTotal">--</span></div>
+            </div>
+            <div class="scenario-card sc-extra">
+                <div class="sc-head">Con abono extra</div>
+                <div class="sc-row"><span class="sc-row-lbl">Cuotas restantes</span><span class="sc-row-val" id="eMonths">--</span></div>
+                <div class="sc-row"><span class="sc-row-lbl">Último pago</span><span class="sc-row-val" id="eEnd">--</span></div>
+                <div class="sc-row"><span class="sc-row-lbl">Intereses restantes</span><span class="sc-row-val c-red" id="eInt">--</span></div>
+                <div class="sc-row"><span class="sc-row-lbl">Total a pagar</span><span class="sc-row-val c-bold" id="eTotal">--</span></div>
+            </div>
         </div>
 
-        <div class="mt-3">
-          <div class="progress border border-dark" style="height:30px;border-radius:0;">
-            <div id="progBar" class="progress-bar bg-warning text-dark fw-bold"
-                 role="progressbar" style="width:0%;min-width:44px;">0%</div>
-          </div>
-          <small id="progLabel" class="text-muted mt-1 d-block"></small>
+        <div class="savings-card">
+            <div class="savings-eyebrow">Tu ahorro real</div>
+            <div class="savings-stats">
+                <div>
+                    <div class="sv-val c-accent" id="sSaved">--</div>
+                    <div class="sv-lbl">cuotas menos</div>
+                </div>
+                <div>
+                    <div class="sv-val c-green" id="sInt">--</div>
+                    <div class="sv-lbl">intereses ahorrados</div>
+                </div>
+                <div>
+                    <div class="sv-val c-gold" id="sFreedom">--</div>
+                    <div class="sv-lbl">fecha de libertad</div>
+                    <div class="sv-sub" id="sFreedomDiff"></div>
+                </div>
+            </div>
         </div>
 
-        <hr class="border-dark border-2 mt-4">
-        <h4 class="text-uppercase fw-bold mb-3">Evolución del saldo</h4>
-        <div style="position:relative;height:300px;">
-          <canvas id="balanceChart"></canvas>
+        <div class="progress-wrap">
+            <div class="prog-bg"><div class="prog-fill" id="progBar" style="width:0%"></div></div>
+            <div class="prog-lbl" id="progLabel"></div>
         </div>
 
-        <hr class="border-dark border-2 mt-4">
-        <h4 class="text-uppercase fw-bold mb-3">¿Cuánto abono para cuánto ahorro?</h4>
-        <div class="table-responsive">
-          <table class="table table-bordered sc-table">
-            <thead class="table-dark">
-              <tr>
-                <th>Abono extra / mes</th>
-                <th class="text-end">Cuotas restantes</th>
-                <th class="text-end">Meses ahorrados</th>
-                <th class="text-end">Intereses ahorrados</th>
-                <th class="text-end">Último pago</th>
-              </tr>
-            </thead>
-            <tbody id="scenariosTable"></tbody>
-          </table>
+        <div class="section-divider">Evolución del saldo</div>
+        <div class="chart-card">
+            <div class="chart-wrap"><canvas id="balanceChart"></canvas></div>
         </div>
 
-        <hr class="border-dark border-2 mt-4">
-        <h4 class="text-uppercase fw-bold mb-3">Amortización mensual (con abono extra)</h4>
-        <div style="max-height:300px;overflow-y:auto;overflow-x:auto;border:2px solid #000;-webkit-overflow-scrolling:touch;">
-          <table class="table table-sm mb-0 amort">
-            <thead class="table-dark sticky-top">
-              <tr>
-                <th>#</th><th>Fecha</th>
-                <th class="text-end">Cuota</th>
-                <th class="text-end">Interés</th>
-                <th class="text-end">Capital</th>
-                <th class="text-end">Abono extra</th>
-                <th class="text-end">Saldo</th>
-              </tr>
-            </thead>
-            <tbody id="amortTable"></tbody>
-          </table>
+        <div class="section-divider">¿Cuánto abono para cuánto ahorro?</div>
+        <div class="table-card">
+            <div class="table-scroll">
+                <table class="pro-table">
+                    <thead><tr>
+                        <th>Abono extra / mes</th>
+                        <th class="text-end">Cuotas</th>
+                        <th class="text-end">Meses ahorrados</th>
+                        <th class="text-end">Intereses ahorrados</th>
+                        <th class="text-end">Último pago</th>
+                    </tr></thead>
+                    <tbody id="scenariosTable"></tbody>
+                </table>
+            </div>
         </div>
-      </div>
+
+        <div class="section-divider">Amortización mensual (con abono extra)</div>
+        <div class="table-card">
+            <div class="table-scroll">
+                <table class="pro-table">
+                    <thead><tr>
+                        <th>#</th><th>Fecha</th>
+                        <th class="text-end">Cuota</th>
+                        <th class="text-end">Interés</th>
+                        <th class="text-end">Capital</th>
+                        <th class="text-end">Abono extra</th>
+                        <th class="text-end">Saldo</th>
+                    </tr></thead>
+                    <tbody id="amortTable"></tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
-   </div>
-  </div>
- </div>
 </div>
 
 <script>
@@ -431,11 +591,13 @@ const REF = {
 const FIRST_PMT = addMonthsD(REF.date, -(REF.paid - 1));
 const PRESETS   = [0, 50000, 100000, 200000, 500000, 700000, 1000000];
 
-/* ── Persistencia de configuración financiera en localStorage ── */
 function saveConfig() {
-    localStorage.setItem('lf_payment',  document.getElementById('installment').value   || '');
-    localStorage.setItem('lf_rate',     document.getElementById('annualRate').value     || '');
+    let rate = document.getElementById('annualRate').value;
+    if (rate) s('mrdisplay', (parseFloat(rate)/12).toFixed(4));
+    localStorage.setItem('lf_payment',  document.getElementById('installment').value  || '');
+    localStorage.setItem('lf_rate',     rate || '');
     localStorage.setItem('lf_nextDate', document.getElementById('nextPaymentDate').value || '');
+    localStorage.setItem('lf_orig',     document.getElementById('originalAmt').value  || '');
 }
 function loadConfig() {
     let pmt  = localStorage.getItem('lf_payment');
@@ -444,13 +606,12 @@ function loadConfig() {
     let bal  = localStorage.getItem('lf_balance');
     let orig = localStorage.getItem('lf_orig');
     let ext  = localStorage.getItem('lf_extra') || localStorage.getItem('creditExtra');
-    if (pmt)  document.getElementById('installment').value      = pmt;
-    if (rate) document.getElementById('annualRate').value       = rate;
-    if (nd)   document.getElementById('nextPaymentDate').value  = nd;
-    if (bal)  document.getElementById('balance').value          = bal;
-    if (ext)  document.getElementById('extra').value            = ext;
-    if (rate) document.getElementById('mrdisplay').textContent  = (parseFloat(rate)/12).toFixed(4);
-    if (orig) REF.originalAmt = parseFloat(orig);
+    if (pmt)  document.getElementById('installment').value     = pmt;
+    if (rate) { document.getElementById('annualRate').value    = rate; s('mrdisplay', (parseFloat(rate)/12).toFixed(4)); }
+    if (nd)   document.getElementById('nextPaymentDate').value = nd;
+    if (bal)  document.getElementById('balance').value         = bal;
+    if (ext)  document.getElementById('extra').value           = ext;
+    if (orig) { document.getElementById('originalAmt').value  = orig; REF.originalAmt = parseFloat(orig); }
 }
 
 let chartInst = null, tickerIv = null, pageOpen = Date.now();
@@ -471,9 +632,9 @@ function simulate(bal, pmt, rate, extra) {
 function autoFill() {
     loadConfig();
     let today = new Date();
-    let bal   = parseFloat(document.getElementById('balance').value)      || 0;
-    let pmt   = parseFloat(document.getElementById('installment').value)  || 0;
-    let ann   = parseFloat(document.getElementById('annualRate').value)   || 0;
+    let bal   = parseFloat(document.getElementById('balance').value)     || 0;
+    let pmt   = parseFloat(document.getElementById('installment').value) || 0;
+    let ann   = parseFloat(document.getElementById('annualRate').value)  || 0;
     let r     = ann / 12 / 100;
 
     s('badgePaid', 'Cuotas: '+REF.paid+' de '+REF.totalTerm+' pagadas');
@@ -487,7 +648,6 @@ function autoFill() {
     } else {
         startTicker(0);
     }
-
     renderMilestones(REF.paid);
     quickCalc();
 }
@@ -501,13 +661,13 @@ function quickCalc() {
     let nd    = document.getElementById('nextPaymentDate').value         || '';
     if (!bal || !pmt || !ann || !nd) return;
 
-    let norm = simulate(bal, pmt, rate, 0);
+    let norm  = simulate(bal, pmt, rate, 0);
     let withE = simulate(bal, pmt, rate, extra);
     if (!norm || !withE) return;
 
-    let nEnd = addMonths(nd, norm.months - 1);
-    let eEnd = addMonths(nd, withE.months - 1);
-    let saved = norm.months - withE.months;
+    let nEnd   = addMonths(nd, norm.months - 1);
+    let eEnd   = addMonths(nd, withE.months - 1);
+    let saved  = norm.months - withE.months;
     let savedI = norm.totalInterest - withE.totalInterest;
 
     s('heroNormalDate', fmy(nEnd));  s('heroNormalM', 'Faltan '+norm.months+' cuotas');
@@ -519,22 +679,30 @@ function quickCalc() {
     let m = badgeTxt.match(/(\d+) de (\d+)/);
     let paid = m ? +m[1] : REF.paid, total = m ? +m[2] : REF.totalTerm;
     let timePct = paid / total * 100;
-    let circ = 2 * Math.PI * 72;
+    let circ = 2 * Math.PI * 58;
     document.getElementById('ringFg').setAttribute('stroke-dasharray',
         (circ * timePct / 100).toFixed(1) + ' ' + circ.toFixed(1));
     s('ringPct', Math.round(timePct)+'%');
-    document.getElementById('ringSub').innerHTML = 'del plazo<br><span style="font-size:.6rem">'+paid+'/'+total+'</span>';
+    document.getElementById('ringSub').innerHTML = 'del plazo<br><span style="font-size:.5rem">'+paid+'/'+total+'</span>';
 
     let msg = timePct >= 75 ? '¡La recta final! ★'
-            : timePct >= 50 ? '¡Más de la mitad! Sigue!'
-            : timePct >= 25 ? '¡Ya llevas un cuarto!' : '¡El camino comienza!';
+            : timePct >= 50 ? '¡Más de la mitad!'
+            : timePct >= 25 ? '¡Ya un cuarto!' : '¡El camino comienza!';
     s('motivMsg', msg);
 
-    let capPaid = REF.originalAmt - bal;
-    let capPct  = Math.min(100, capPaid / REF.originalAmt * 100);
-    s('heroCapPct', Math.round(capPct*10)/10+'%');
-    document.getElementById('heroCapBar').style.width = capPct + '%';
-    s('heroCapAmt', cop(capPaid)+' de '+cop(REF.originalAmt));
+    /* Capital saldado — sin -Infinity */
+    let origAmt = parseFloat(document.getElementById('originalAmt').value) || REF.originalAmt;
+    if (origAmt > 0) {
+        let capPaid = origAmt - bal;
+        let capPct  = Math.min(100, Math.max(0, capPaid / origAmt * 100));
+        s('heroCapPct', Math.round(capPct * 10) / 10 + '%');
+        document.getElementById('heroCapBar').style.width = capPct + '%';
+        s('heroCapAmt', cop(capPaid) + ' de ' + cop(origAmt));
+    } else {
+        s('heroCapPct', '—');
+        s('heroCapAmt', 'Ingresa monto original');
+        document.getElementById('heroCapBar').style.width = '0%';
+    }
 
     let nextInt = bal * rate, nextCap = pmt - nextInt;
     document.getElementById('insightBox').classList.remove('d-none');
@@ -556,7 +724,7 @@ function startTicker(dailyInt) {
 
 function renderMilestones(paidNow) {
     let ms = [
-        { lbl: 'Inicio', cuota: 1,                            icon: '●' },
+        { lbl: 'Inicio', cuota: 1,                             icon: '●' },
         { lbl: '25%',    cuota: Math.round(REF.totalTerm*.25), icon: '¼' },
         { lbl: '50%',    cuota: Math.round(REF.totalTerm*.50), icon: '½' },
         { lbl: '75%',    cuota: Math.round(REF.totalTerm*.75), icon: '¾' },
@@ -564,8 +732,7 @@ function renderMilestones(paidNow) {
     ];
     let pct = Math.min(100, paidNow / REF.totalTerm * 100);
     document.getElementById('msFill').style.width = pct + '%';
-    s('msCaption', Math.round(pct)+'% del camino recorrido');
-
+    s('msCaption', Math.round(pct)+'% del camino');
     let row = document.getElementById('msRow'); row.innerHTML = '';
     ms.forEach(m => {
         let date = addMonthsD(FIRST_PMT, m.cuota - 1);
@@ -587,15 +754,17 @@ function calculate() {
     let rate  = ann / 12 / 100;
     let extra = parseFloat(document.getElementById('extra').value) || 0;
     let nd    = document.getElementById('nextPaymentDate').value;
+    let orig  = parseFloat(document.getElementById('originalAmt').value) || 0;
 
-    document.getElementById('mrdisplay').textContent = (rate*100).toFixed(4);
+    s('mrdisplay', (rate*100).toFixed(4));
     localStorage.setItem('lf_balance',  bal);
     localStorage.setItem('lf_payment',  pmt);
     localStorage.setItem('lf_rate',     ann);
     localStorage.setItem('lf_nextDate', nd);
     localStorage.setItem('lf_extra',    extra);
+    if (orig) localStorage.setItem('lf_orig', orig);
 
-    let norm = simulate(bal, pmt, rate, 0);
+    let norm  = simulate(bal, pmt, rate, 0);
     let withE = simulate(bal, pmt, rate, extra);
     if (!norm || !withE) { alert('La cuota no cubre los intereses. Revisa los parámetros.'); return; }
 
@@ -603,17 +772,16 @@ function calculate() {
     let saved = norm.months - withE.months, savedI = norm.totalInterest - withE.totalInterest;
 
     s('nMonths', norm.months);  s('nEnd', fd(nEnd));
-    s('nInt', cop(norm.totalInterest)); s('nTotal', cop(norm.totalInterest+bal));
+    s('nInt',  cop(norm.totalInterest));  s('nTotal', cop(norm.totalInterest+bal));
     s('eMonths', withE.months); s('eEnd', fd(eEnd));
-    s('eInt', cop(withE.totalInterest)); s('eTotal', cop(withE.totalInterest+bal));
+    s('eInt',  cop(withE.totalInterest)); s('eTotal', cop(withE.totalInterest+bal));
     s('sSaved', saved); s('sInt', cop(savedI));
     s('sFreedom', fmy(eEnd));
-    s('sFreedomDiff', saved>0 ? saved+' meses antes de lo previsto' : 'Mismo plazo');
+    s('sFreedomDiff', saved>0 ? saved+' meses antes' : 'Mismo plazo');
 
-    let pct = Math.round(saved/norm.months*100);
+    let pct = Math.round(saved / norm.months * 100);
     document.getElementById('progBar').style.width = pct+'%';
-    document.getElementById('progBar').textContent = pct+'%';
-    s('progLabel', 'Con '+cop(extra)+'/mes abonados, reduces el '+pct+'% del plazo ('+saved+' cuotas de '+norm.months+')');
+    s('progLabel', 'Con '+cop(extra)+'/mes ahorras el '+pct+'% del plazo ('+saved+' cuotas de '+norm.months+')');
 
     let res = document.getElementById('results');
     res.classList.remove('d-none');
@@ -634,17 +802,21 @@ function renderChart(bal0, normRows, exRows, nd) {
     if (chartInst) chartInst.destroy();
     chartInst = new Chart(document.getElementById('balanceChart').getContext('2d'), {
         type: 'line',
-        data: { labels,
-            datasets: [
-                { label:'Sin abono extra', data:dn, borderColor:'#dc3545', backgroundColor:'rgba(220,53,69,.07)', fill:true, tension:.3, pointRadius:0, borderWidth:2 },
-                { label:'Con abono extra',  data:de, borderColor:'#198754', backgroundColor:'rgba(25,135,84,.1)',  fill:true, tension:.3, pointRadius:0, borderWidth:2 }
-            ]},
-        options: { responsive:true, maintainAspectRatio:false,
-            plugins: { legend:{position:'top'}, tooltip:{callbacks:{label:c=>c.dataset.label+': '+cop(c.raw)}} },
+        data: { labels, datasets: [
+            { label:'Sin abono', data:dn, borderColor:'#fb7185', backgroundColor:'rgba(251,113,133,0.06)', fill:true, tension:.4, pointRadius:0, borderWidth:2 },
+            { label:'Con abono', data:de, borderColor:'#34d399', backgroundColor:'rgba(52,211,153,0.06)',  fill:true, tension:.4, pointRadius:0, borderWidth:2 }
+        ]},
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position:'top', labels:{ color:'#94a3b8', font:{ family:'Space Grotesk', size:12 }, boxWidth:12 } },
+                tooltip: { callbacks: { label: c => c.dataset.label+': '+cop(c.raw) } }
+            },
             scales: {
-                x:{ ticks:{maxRotation:45,autoSkip:true,maxTicksLimit:14} },
-                y:{ ticks:{callback:v=>'$'+(v/1000000).toFixed(1)+'M'} }
-            }}
+                x: { ticks:{ color:'#475569', maxRotation:45, autoSkip:true, maxTicksLimit:10, font:{size:11} }, grid:{ color:'rgba(255,255,255,0.04)' } },
+                y: { ticks:{ callback:v=>'$'+(v/1000000).toFixed(1)+'M', color:'#475569', font:{size:11} }, grid:{ color:'rgba(255,255,255,0.04)' } }
+            }
+        }
     });
 }
 
@@ -655,15 +827,19 @@ function renderScenarios(bal, pmt, rate, nd, normData, curExtra) {
     presets.forEach(amt => {
         if (amt >= bal) return;
         let sim = simulate(bal, pmt, rate, amt); if (!sim) return;
-        let saved = normData.months - sim.months, savedI = normData.totalInterest - sim.totalInterest;
-        let end = addMonths(nd, sim.months-1), isAct = Math.abs(amt-curExtra)<1;
-        let tr = document.createElement('tr');
-        if (isAct) tr.classList.add('sc-hl'); if (amt===0) tr.classList.add('sc-base');
-        tr.innerHTML = '<td>'+(amt===0?'Sin abono':cop(amt)+'/mes')+(isAct?' <span class="badge bg-warning text-dark">actual</span>':'')+'</td>'
-            +'<td class="text-end">'+sim.months+'</td>'
-            +'<td class="text-end">'+(saved>0?'−'+saved+' m':'—')+'</td>'
-            +'<td class="text-end text-success fw-bold">'+(savedI>1?cop(savedI):'—')+'</td>'
-            +'<td class="text-end">'+fd(end)+'</td>';
+        let saved  = normData.months - sim.months;
+        let savedI = normData.totalInterest - sim.totalInterest;
+        let end    = addMonths(nd, sim.months-1);
+        let isAct  = Math.abs(amt - curExtra) < 1;
+        let tr     = document.createElement('tr');
+        if (isAct)  tr.classList.add('row-hl');
+        if (amt===0) tr.classList.add('row-base');
+        tr.innerHTML =
+            '<td class="c-bold">'+(amt===0?'Sin abono':cop(amt)+'/mes')+(isAct?' <span class="badge-act">ACTUAL</span>':'')+'</td>'
+           +'<td class="text-end c-bold">'+sim.months+'</td>'
+           +'<td class="text-end">'+(saved>0?'<span class="c-accent">−'+saved+' m</span>':'—')+'</td>'
+           +'<td class="text-end">'+(savedI>1?'<span class="c-green">'+cop(savedI)+'</span>':'—')+'</td>'
+           +'<td class="text-end">'+fd(end)+'</td>';
         tbody.appendChild(tr);
     });
 }
@@ -671,13 +847,15 @@ function renderScenarios(bal, pmt, rate, nd, normData, curExtra) {
 function renderAmort(rows, nd, pmt) {
     let tbody = document.getElementById('amortTable'); tbody.innerHTML = '';
     rows.forEach(r => {
-        let d = addMonths(nd, r.month-1), tr = document.createElement('tr');
-        tr.innerHTML = '<td>'+r.month+'</td><td>'+fd(d)+'</td>'
-            +'<td class="text-end">'+cop(pmt)+'</td>'
-            +'<td class="text-end text-danger">'+cop(r.interest)+'</td>'
-            +'<td class="text-end">'+cop(r.principal)+'</td>'
-            +'<td class="text-end text-success fw-bold">'+(r.extra>0?cop(r.extra):'—')+'</td>'
-            +'<td class="text-end">'+cop(r.balance)+'</td>';
+        let d  = addMonths(nd, r.month-1);
+        let tr = document.createElement('tr');
+        tr.innerHTML =
+            '<td>'+r.month+'</td><td>'+fd(d)+'</td>'
+           +'<td class="text-end">'+cop(pmt)+'</td>'
+           +'<td class="text-end c-red">'+cop(r.interest)+'</td>'
+           +'<td class="text-end">'+cop(r.principal)+'</td>'
+           +'<td class="text-end c-gold">'+(r.extra>0?cop(r.extra):'—')+'</td>'
+           +'<td class="text-end c-bold">'+cop(r.balance)+'</td>';
         tbody.appendChild(tr);
     });
 }
@@ -687,37 +865,26 @@ function onBalanceChanged() {
     let ann  = parseFloat(document.getElementById('annualRate').value)  || 0;
     let pmt  = parseFloat(document.getElementById('installment').value) || 0;
     let rate = ann / 12 / 100;
-
     document.getElementById('estimatedNotice').classList.add('d-none');
     if (bal > 0) localStorage.setItem('lf_balance', bal);
     if (bal <= 0) return;
-
-    // Reiniciar ticker con el nuevo saldo
-    let dailyInt = bal * rate / 30;
-    startTicker(dailyInt);
-    s('dailyInt', cop(dailyInt)+'/día');
-
-    // Actualizar desglose próxima cuota
-    let nextInt = bal * rate, nextCap = pmt - nextInt;
-    s('nextCapital', cop(nextCap));
-
-    // Actualizar hero y demás métricas
+    if (ann > 0) {
+        let dailyInt = bal * rate / 30;
+        startTicker(dailyInt);
+        s('dailyInt', cop(dailyInt)+'/día');
+    }
+    if (pmt > 0 && ann > 0) s('nextCapital', cop(pmt - bal * rate));
     quickCalc();
 }
 
-document.getElementById('annualRate').addEventListener('input', function() {
-    document.getElementById('mrdisplay').textContent = (parseFloat(this.value||0)/12).toFixed(4);
-    onBalanceChanged();
-});
 autoFill();
 </script>
 
-<!-- Service Worker PWA -->
 <script>
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-            .catch(err => console.warn('SW no registrado:', err));
+            .catch(err => console.warn('SW:', err));
     });
 }
 </script>
