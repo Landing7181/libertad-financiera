@@ -14,6 +14,7 @@
     <link rel="apple-touch-icon" href="icon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --bg:          #07071a;
@@ -72,27 +73,64 @@
         /* ── HERO GRID ── */
         .hero-grid {
             display: grid;
-            grid-template-columns: 180px 1fr;
+            grid-template-columns: 270px 1fr;
             gap: 12px; margin-bottom: 12px; align-items: stretch;
         }
 
-        /* Ring card */
+        /* Ring card — hero principal */
         .ring-card {
-            background: var(--glass); border: 1px solid var(--border);
-            border-radius: var(--r); padding: 20px 16px;
+            background: linear-gradient(160deg, rgba(251,191,36,0.06) 0%, var(--glass) 50%);
+            border: 1px solid rgba(251,191,36,0.15);
+            border-radius: var(--r); padding: 22px 20px;
             display: flex; flex-direction: column; align-items: center; gap: 8px;
+            position: relative; overflow: hidden;
         }
-        .ring-wrap { position: relative; width: 140px; height: 140px; }
+        .ring-card::before {
+            content: ''; position: absolute; top: -40px; left: 50%;
+            transform: translateX(-50%);
+            width: 180px; height: 180px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .ring-wrap { position: relative; width: 150px; height: 150px; }
         .ring-center {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%,-50%); text-align: center; pointer-events: none;
         }
-        .ring-pct  { font-size: 1.9rem; font-weight: 700; color: var(--gold); line-height: 1; letter-spacing: -.03em; }
-        .ring-sub  { font-size: .58rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-        .ring-motiv { font-size: .72rem; font-weight: 600; color: var(--gold); text-align: center; min-height: 1em; }
+        .ring-pct  { font-size: 2.1rem; font-weight: 700; color: var(--gold); line-height: 1; letter-spacing: -.03em; }
+        .ring-sub  { font-size: .57rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        .ring-motiv { font-size: .75rem; font-weight: 600; color: var(--gold); text-align: center; min-height: 1em; }
 
-        /* Metrics 2×2 */
-        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        /* Fechas dentro del ring card */
+        .ring-dates {
+            display: flex; align-items: center; justify-content: space-around; gap: 12px;
+            padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); width: 100%;
+            margin-top: 4px;
+        }
+        .rd-col { text-align: center; flex: 1; }
+        .rd-lbl { font-size: .55rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text3); margin-bottom: 4px; }
+        .rd-val { font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+        .rd-sub { font-size: .65rem; color: var(--text2); margin-top: 2px; }
+        .rd-sep { color: var(--text3); font-size: 1.1rem; flex-shrink: 0; opacity: .5; }
+
+        /* Metrics — 2 cards apiladas (ahorro + capital) */
+        .metrics-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+
+        /* FAB — botón exportar PDF */
+        .fab-pdf {
+            position: fixed; bottom: 22px; right: 18px; z-index: 999;
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            color: #fff; border: none; border-radius: 100px;
+            padding: 12px 20px 12px 16px;
+            font-family: 'Space Grotesk', sans-serif; font-size: .82rem; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            cursor: pointer; box-shadow: 0 4px 22px rgba(124,58,237,0.5);
+            transition: opacity .2s, transform .15s;
+        }
+        .fab-pdf:hover  { opacity: .88; }
+        .fab-pdf:active { transform: scale(.95); }
+        .fab-pdf:disabled { opacity: .55; cursor: wait; }
+        .fab-icon { font-size: 1rem; }
         .metric-card {
             background: var(--glass); border: 1px solid var(--border);
             border-radius: var(--r-sm); padding: 12px 14px;
@@ -304,13 +342,12 @@
 
         /* ── RESPONSIVE MOBILE ── */
         @media (max-width: 600px) {
-            #app { padding: 12px 10px 40px; }
+            #app { padding: 12px 10px 80px; }
             .hero-grid { grid-template-columns: 1fr; }
-            .ring-card { flex-direction: row; gap: 16px; padding: 16px; }
-            .ring-wrap { width: 110px; height: 110px; flex-shrink: 0; }
-            .ring-wrap svg { width: 110px !important; height: 110px !important; }
-            .ring-pct { font-size: 1.5rem; }
-            .metrics-grid { flex: 1; }
+            /* Ring card: columna centrada (no fila) */
+            .ring-card { padding: 22px 18px; }
+            /* Metrics: 2 cols lado a lado en mobile */
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
             .ticker-bar { flex-direction: column; align-items: flex-start; }
             .ticker-val { font-size: 1.5rem; }
             .ticker-pills { width: 100%; }
@@ -323,7 +360,6 @@
         @media (max-width: 380px) {
             .form-grid { grid-template-columns: 1fr; }
             .form-group.span2 { grid-column: auto; }
-            .metrics-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -358,19 +394,23 @@
                 </div>
             </div>
             <div class="ring-motiv" id="motivMsg"></div>
+            <!-- Fechas de libertad integradas en el hero card -->
+            <div class="ring-dates">
+                <div class="rd-col">
+                    <div class="rd-lbl">Sin abono</div>
+                    <div class="rd-val c-red" id="heroNormalDate">—</div>
+                    <div class="rd-sub" id="heroNormalM"></div>
+                </div>
+                <div class="rd-sep">→</div>
+                <div class="rd-col">
+                    <div class="rd-lbl">Con abono</div>
+                    <div class="rd-val c-green" id="heroExtraDate">—</div>
+                    <div class="rd-sub" id="heroExtraM"></div>
+                </div>
+            </div>
         </div>
 
         <div class="metrics-grid">
-            <div class="metric-card m-normal">
-                <div class="metric-lbl">Sin abono</div>
-                <div class="metric-val" id="heroNormalDate">—</div>
-                <div class="metric-sub" id="heroNormalM"></div>
-            </div>
-            <div class="metric-card m-extra">
-                <div class="metric-lbl">Con abono</div>
-                <div class="metric-val" id="heroExtraDate">—</div>
-                <div class="metric-sub" id="heroExtraM"></div>
-            </div>
             <div class="metric-card m-saved">
                 <div class="metric-lbl">Ahorro total</div>
                 <div class="metric-val" id="heroSavedM">—</div>
@@ -558,6 +598,11 @@
         </div>
 
     </div>
+    <!-- FAB: exportar PDF / compartir WhatsApp -->
+    <button class="fab-pdf" id="pdfBtn" onclick="exportPDF()">
+        <span class="fab-icon">↑</span> Compartir PDF
+    </button>
+
 </div>
 
 <script>
@@ -875,6 +920,197 @@ function onBalanceChanged() {
     }
     if (pmt > 0 && ann > 0) s('nextCapital', cop(pmt - bal * rate));
     quickCalc();
+}
+
+async function exportPDF() {
+    const btn = document.getElementById('pdfBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="fab-icon">⏳</span> Generando…';
+    try {
+        const bal   = parseFloat(document.getElementById('balance').value)     || 0;
+        const pmt   = parseFloat(document.getElementById('installment').value) || 0;
+        const ann   = parseFloat(document.getElementById('annualRate').value)  || 0;
+        const extra = parseFloat(document.getElementById('extra').value)       || 0;
+        const nd    = document.getElementById('nextPaymentDate').value         || '';
+        const orig  = parseFloat(document.getElementById('originalAmt').value) || 0;
+        const rate  = ann / 12 / 100;
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+        const W = 210, M = 18, C = W - M * 2;
+        let y = 0;
+
+        const clr = {
+            bg:     [7,  7, 26],
+            card:   [15, 15, 35],
+            accent: [129,140,248],
+            green:  [52, 211,153],
+            red:    [251,113,133],
+            gold:   [251,191,36],
+            text:   [241,245,249],
+            muted:  [100,116,139],
+            border: [30, 30, 60],
+        };
+
+        // ── ENCABEZADO ──────────────────────────────────
+        doc.setFillColor(...clr.bg);
+        doc.rect(0, 0, W, 42, 'F');
+        // Barra de acento superior
+        doc.setFillColor(...clr.accent);
+        doc.rect(0, 0, W, 3, 'F');
+
+        doc.setTextColor(...clr.text);
+        doc.setFontSize(20); doc.setFont('helvetica', 'bold');
+        doc.text('LIBERTAD FINANCIERA', M, 20);
+        doc.setFontSize(9);  doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...clr.muted);
+        const now = new Date();
+        doc.text('Reporte generado: ' + fd(now) + '  ·  ' + now.getHours()+':'+String(now.getMinutes()).padStart(2,'0'), M, 30);
+        doc.text('Cuotas pagadas: ' + REF.paid + ' de ' + REF.totalTerm, M, 38);
+        y = 52;
+
+        // ── HELPER: sección ──────────────────────────────
+        const section = (title, color) => {
+            doc.setTextColor(...color);
+            doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+            doc.text(title, M, y);
+            doc.setDrawColor(...color);
+            doc.setLineWidth(0.4);
+            doc.line(M, y + 2, M + C, y + 2);
+            y += 9;
+        };
+
+        // ── ESTADO ACTUAL ────────────────────────────────
+        section('ESTADO ACTUAL DEL CRÉDITO', clr.accent);
+        const fields = [
+            ['Saldo actual',    bal   ? cop(bal)   : '—'],
+            ['Cuota mensual',   pmt   ? cop(pmt)   : '—'],
+            ['Abono extra/mes', extra ? cop(extra) : '$ 0'],
+            ['Tasa nominal',    ann   ? ann + ' %' : '—'],
+            ['Próximo pago',    nd    || '—'],
+        ];
+        if (orig) fields.push(['Monto original', cop(orig)]);
+        fields.forEach(([lbl, val]) => {
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(...clr.muted); doc.setFontSize(9);
+            doc.text(lbl + ':', M, y);
+            doc.setFont('helvetica', 'bold'); doc.setTextColor(...clr.text);
+            doc.text(val, M + 52, y);
+            y += 7;
+        });
+        y += 4;
+
+        if (bal && pmt && ann && nd) {
+            const norm  = simulate(bal, pmt, rate, 0);
+            const withE = simulate(bal, pmt, rate, extra);
+            if (norm && withE) {
+                const nEnd   = addMonths(nd, norm.months - 1);
+                const eEnd   = addMonths(nd, withE.months - 1);
+                const saved  = norm.months - withE.months;
+                const savedI = norm.totalInterest - withE.totalInterest;
+                const half   = (C - 6) / 2;
+
+                // ── ESCENARIOS ───────────────────────────────
+                section('COMPARATIVA DE ESCENARIOS', clr.muted);
+
+                // Fondo izquierdo (sin abono)
+                doc.setFillColor(251, 113, 133, 18);
+                doc.roundedRect(M, y, half, 46, 2, 2, 'F');
+                doc.setTextColor(...clr.red);
+                doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+                doc.text('SIN ABONO EXTRA', M + 4, y + 8);
+
+                // Fondo derecho (con abono)
+                const rx = M + half + 6;
+                doc.setFillColor(52, 211, 153, 12);
+                doc.roundedRect(rx, y, half, 46, 2, 2, 'F');
+                doc.setTextColor(...clr.green);
+                doc.text('CON ABONO EXTRA', rx + 4, y + 8);
+
+                const scRows = [
+                    ['Cuotas', norm.months + ' cuotas',   withE.months + ' cuotas'],
+                    ['Fin',    fd(nEnd),                   fd(eEnd)],
+                    ['Intereses', cop(norm.totalInterest), cop(withE.totalInterest)],
+                    ['Total',  cop(norm.totalInterest+bal),cop(withE.totalInterest+bal)],
+                ];
+                scRows.forEach(([lbl, vN, vE], i) => {
+                    const ry = y + 16 + i * 7;
+                    doc.setFont('helvetica', 'normal'); doc.setTextColor(...clr.muted); doc.setFontSize(8);
+                    doc.text(lbl + ':', M + 4, ry);
+                    doc.setFont('helvetica', 'bold'); doc.setTextColor(...clr.text);
+                    doc.text(vN, M + 24, ry);
+                    doc.text(lbl + ':', rx + 4, ry);
+                    doc.text(vE, rx + 24, ry);
+                });
+                y += 56;
+
+                // ── AHORRO REAL ──────────────────────────────
+                section('TU AHORRO REAL', clr.gold);
+                doc.setFillColor(251, 191, 36, 12);
+                doc.roundedRect(M, y, C, 32, 3, 3, 'F');
+
+                const thirds = C / 3;
+                const savings = [
+                    [saved + ' cuotas', 'menos', clr.accent],
+                    [cop(savedI), 'en intereses', clr.green],
+                    [fmy(eEnd), saved>0 ? saved+' meses antes' : 'mismo plazo', clr.gold],
+                ];
+                savings.forEach(([val, sub, color], i) => {
+                    const sx = M + i * thirds + thirds / 2;
+                    doc.setFont('helvetica', 'bold'); doc.setTextColor(...color); doc.setFontSize(11);
+                    doc.text(val, sx, y + 13, { align: 'center' });
+                    doc.setFont('helvetica', 'normal'); doc.setTextColor(...clr.muted); doc.setFontSize(7.5);
+                    doc.text(sub, sx, y + 21, { align: 'center' });
+                });
+                y += 40;
+
+                // ── CAPITAL SALDADO ───────────────────────────
+                if (orig > 0) {
+                    const capPaid = orig - bal;
+                    const capPct  = Math.max(0, Math.min(100, capPaid / orig * 100));
+                    section('CAPITAL SALDADO', clr.gold);
+                    doc.setFont('helvetica', 'normal'); doc.setTextColor(...clr.muted); doc.setFontSize(9);
+                    doc.text(Math.round(capPct * 10) / 10 + '% pagado  ·  ' + cop(capPaid) + ' de ' + cop(orig), M, y);
+                    // Barra
+                    doc.setFillColor(...clr.border);
+                    doc.roundedRect(M, y + 4, C, 5, 1, 1, 'F');
+                    doc.setFillColor(...clr.gold);
+                    doc.roundedRect(M, y + 4, C * capPct / 100, 5, 1, 1, 'F');
+                    y += 18;
+                }
+            }
+        }
+
+        // ── FOOTER ─────────────────────────────────────
+        doc.setFillColor(...clr.card);
+        doc.rect(0, 282, W, 15, 'F');
+        doc.setTextColor(...clr.muted); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
+        doc.text('Generado por Libertad Financiera PWA  ·  Solo para uso personal', M, 289);
+        doc.setTextColor(...clr.accent);
+        doc.text('landing7181.github.io/libertad-financiera', W - M, 289, { align: 'right' });
+
+        // ── COMPARTIR / DESCARGAR ──────────────────────
+        const fileName = 'libertad-' + now.toISOString().slice(0,10) + '.pdf';
+        const blob = doc.output('blob');
+        const file = new File([blob], fileName, { type: 'application/pdf' });
+
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                files: [file],
+                title: 'Libertad Financiera — Reporte',
+                text: 'Mi reporte de crédito generado el ' + fd(now),
+            });
+        } else {
+            doc.save(fileName);
+        }
+    } catch(e) {
+        if (e.name !== 'AbortError') {
+            console.error(e);
+            alert('No se pudo generar el PDF. Verifica que hayas ingresado los datos del crédito.');
+        }
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="fab-icon">↑</span> Compartir PDF';
+    }
 }
 
 autoFill();
