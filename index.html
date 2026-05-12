@@ -678,7 +678,7 @@ function loadConfig() {
     if (nd)   document.getElementById('nextPaymentDate').value = nd;
     if (bal)  $set('balance', bal);
     if (ext)  $set('extra', ext);
-    if (orig) { $set('originalAmt', orig); REF.originalAmt = parseFloat(orig); }
+    if (orig) { $set('originalAmt', orig); REF.originalAmt = parseFloat(String(orig).replace(/\./g,'')); }
 }
 
 let chartInst = null, tickerIv = null, pageOpen = Date.now();
@@ -758,7 +758,7 @@ function quickCalc() {
     s('motivMsg', msg);
 
     /* Capital saldado — sin -Infinity */
-    let origAmt = parseFloat(document.getElementById('originalAmt').value) || REF.originalAmt;
+    let origAmt = $v('originalAmt') || REF.originalAmt;
     if (origAmt > 0) {
         let capPaid = origAmt - bal;
         let capPct  = Math.min(100, Math.max(0, capPaid / origAmt * 100));
