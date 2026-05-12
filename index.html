@@ -429,8 +429,11 @@
     <!-- TICKER -->
     <div class="ticker-bar">
         <div class="ticker-main">
-            <div class="ticker-label">Intereses generados desde que abriste esta página</div>
-            <div class="ticker-val" id="tickerVal">$ 0,00</div>
+            <div class="ticker-label">Intereses generados en Pesos Colombianos (COP)</div>
+            <div style="display:flex;align-items:baseline;gap:8px;">
+                <div class="ticker-val" id="tickerVal">$ 0,00</div>
+                <div style="font-size:.7rem;font-weight:700;color:var(--red);opacity:.65;letter-spacing:1.5px">COP</div>
+            </div>
         </div>
         <div class="ticker-pills">
             <div class="stat-pill">
@@ -469,19 +472,19 @@
         <div class="form-grid">
             <div class="form-group">
                 <label class="form-label">Saldo actual ($)</label>
-                <input type="number" id="balance" class="form-control" placeholder="0"
-                       oninput="onBalanceChanged()">
+                <input type="text" inputmode="numeric" id="balance" class="form-control" placeholder="0"
+                       oninput="fmtInput(this);onBalanceChanged()">
             </div>
             <div class="form-group">
                 <label class="form-label">Cuota mensual ($)</label>
-                <input type="number" id="installment" class="form-control" placeholder="0"
-                       oninput="saveConfig()">
+                <input type="text" inputmode="numeric" id="installment" class="form-control" placeholder="0"
+                       oninput="fmtInput(this);saveConfig()">
                 <span class="form-hint">Valor total descontado de nómina (incluye seguros)</span>
             </div>
             <div class="form-group">
                 <label class="form-label">Monto original ($)</label>
-                <input type="number" id="originalAmt" class="form-control" placeholder="0"
-                       oninput="saveConfig()">
+                <input type="text" inputmode="numeric" id="originalAmt" class="form-control" placeholder="0"
+                       oninput="fmtInput(this);saveConfig()">
                 <span class="form-hint">Valor del crédito en la fecha de apertura</span>
             </div>
             <div class="form-group">
@@ -497,8 +500,8 @@
             </div>
             <div class="form-group">
                 <label class="form-label hi">Abono extra ($/mes)</label>
-                <input type="number" id="extra" class="form-control" placeholder="0"
-                       oninput="saveExtra();quickCalc()">
+                <input type="text" inputmode="numeric" id="extra" class="form-control" placeholder="0"
+                       oninput="fmtInput(this);saveExtra();quickCalc()">
                 <span class="form-hint">Adelanta cuotas sin cambiar la cuota fija</span>
             </div>
             <div class="form-group full">
@@ -626,6 +629,22 @@ function copd(v) {
 }
 function s(id,v) { let e=document.getElementById(id); if(e) e.textContent=v; }
 
+/* ── Helpers de formato para inputs de dinero ── */
+function fmtInput(el) {
+    // Quita todo excepto dígitos, reformatea con puntos de miles (es-CO)
+    let raw = el.value.replace(/\./g, '').replace(/\D/g, '');
+    if (raw) el.value = parseInt(raw).toLocaleString('es-CO');
+}
+function $v(id) {
+    // Lee valor de un input formateado y retorna número
+    return parseFloat((document.getElementById(id).value || '').replace(/\./g, '').replace(/,/g,'.')) || 0;
+}
+function $set(id, num) {
+    // Escribe un número formateado en el input
+    let el = document.getElementById(id);
+    if (el && num) el.value = Math.round(+num).toLocaleString('es-CO');
+}
+
 const REF = {
     date:        new Date('2026-05-05T12:00:00'),
     balance:     0,
@@ -642,10 +661,10 @@ const PRESETS   = [0, 50000, 100000, 200000, 500000, 700000, 1000000];
 function saveConfig() {
     let rate = document.getElementById('annualRate').value;
     if (rate) s('mrdisplay', (parseFloat(rate)/12).toFixed(4));
-    localStorage.setItem('lf_payment',  document.getElementById('installment').value  || '');
+    localStorage.setItem('lf_payment',  $v('installment')  || '');
     localStorage.setItem('lf_rate',     rate || '');
     localStorage.setItem('lf_nextDate', document.getElementById('nextPaymentDate').value || '');
-    localStorage.setItem('lf_orig',     document.getElementById('originalAmt').value  || '');
+    localStorage.setItem('lf_orig',     $v('originalAmt') || '');
 }
 function loadConfig() {
     let pmt  = localStorage.getItem('lf_payment');
@@ -654,12 +673,12 @@ function loadConfig() {
     let bal  = localStorage.getItem('lf_balance');
     let orig = localStorage.getItem('lf_orig');
     let ext  = localStorage.getItem('lf_extra') || localStorage.getItem('creditExtra');
-    if (pmt)  document.getElementById('installment').value     = pmt;
-    if (rate) { document.getElementById('annualRate').value    = rate; s('mrdisplay', (parseFloat(rate)/12).toFixed(4)); }
+    if (pmt)  $set('installment', pmt);
+    if (rate) { document.getElementById('annualRate').value = rate; s('mrdisplay', (parseFloat(rate)/12).toFixed(4)); }
     if (nd)   document.getElementById('nextPaymentDate').value = nd;
-    if (bal)  document.getElementById('balance').value         = bal;
-    if (ext)  document.getElementById('extra').value           = ext;
-    if (orig) { document.getElementById('originalAmt').value  = orig; REF.originalAmt = parseFloat(orig); }
+    if (bal)  $set('balance', bal);
+    if (ext)  $set('extra', ext);
+    if (orig) { $set('originalAmt', orig); REF.originalAmt = parseFloat(orig); }
 }
 
 let chartInst = null, tickerIv = null, pageOpen = Date.now();
@@ -680,8 +699,8 @@ function simulate(bal, pmt, rate, extra) {
 function autoFill() {
     loadConfig();
     let today = new Date();
-    let bal   = parseFloat(document.getElementById('balance').value)     || 0;
-    let pmt   = parseFloat(document.getElementById('installment').value) || 0;
+    let bal   = $v('balance');
+    let pmt   = $v('installment');
     let ann   = parseFloat(document.getElementById('annualRate').value)  || 0;
     let r     = ann / 12 / 100;
 
@@ -701,11 +720,11 @@ function autoFill() {
 }
 
 function quickCalc() {
-    let bal   = parseFloat(document.getElementById('balance').value)     || 0;
-    let pmt   = parseFloat(document.getElementById('installment').value) || 0;
+    let bal   = $v('balance');
+    let pmt   = $v('installment');
     let ann   = parseFloat(document.getElementById('annualRate').value)  || 0;
     let rate  = ann / 12 / 100;
-    let extra = parseFloat(document.getElementById('extra').value)       || 0;
+    let extra = $v('extra');
     let nd    = document.getElementById('nextPaymentDate').value         || '';
     if (!bal || !pmt || !ann || !nd) return;
 
@@ -796,13 +815,13 @@ function renderMilestones(paidNow) {
 
 function calculate() {
     quickCalc();
-    let bal   = parseFloat(document.getElementById('balance').value);
-    let pmt   = parseFloat(document.getElementById('installment').value);
+    let bal   = $v('balance');
+    let pmt   = $v('installment');
     let ann   = parseFloat(document.getElementById('annualRate').value);
     let rate  = ann / 12 / 100;
-    let extra = parseFloat(document.getElementById('extra').value) || 0;
+    let extra = $v('extra');
     let nd    = document.getElementById('nextPaymentDate').value;
-    let orig  = parseFloat(document.getElementById('originalAmt').value) || 0;
+    let orig  = $v('originalAmt');
 
     s('mrdisplay', (rate*100).toFixed(4));
     localStorage.setItem('lf_balance',  bal);
@@ -840,7 +859,7 @@ function calculate() {
     res.scrollIntoView({ behavior: 'smooth' });
 }
 
-function saveExtra() { localStorage.setItem('lf_extra', document.getElementById('extra').value||0); }
+function saveExtra() { localStorage.setItem('lf_extra', $v('extra') || 0); }
 
 function renderChart(bal0, normRows, exRows, nd) {
     let labels = [fmy(addMonths(nd,-1))], dn = [bal0], de = [bal0];
@@ -909,9 +928,9 @@ function renderAmort(rows, nd, pmt) {
 }
 
 function onBalanceChanged() {
-    let bal  = parseFloat(document.getElementById('balance').value) || 0;
+    let bal  = $v('balance');
     let ann  = parseFloat(document.getElementById('annualRate').value)  || 0;
-    let pmt  = parseFloat(document.getElementById('installment').value) || 0;
+    let pmt  = $v('installment');
     let rate = ann / 12 / 100;
     document.getElementById('estimatedNotice').classList.add('d-none');
     if (bal > 0) localStorage.setItem('lf_balance', bal);
@@ -930,12 +949,12 @@ async function exportPDF() {
     btn.disabled = true;
     btn.innerHTML = '<span class="fab-icon">⏳</span> Generando…';
     try {
-        const bal   = parseFloat(document.getElementById('balance').value)     || 0;
-        const pmt   = parseFloat(document.getElementById('installment').value) || 0;
+        const bal   = $v('balance');
+        const pmt   = $v('installment');
         const ann   = parseFloat(document.getElementById('annualRate').value)  || 0;
-        const extra = parseFloat(document.getElementById('extra').value)       || 0;
+        const extra = $v('extra');
         const nd    = document.getElementById('nextPaymentDate').value         || '';
-        const orig  = parseFloat(document.getElementById('originalAmt').value) || 0;
+        const orig  = $v('originalAmt');
         const rate  = ann / 12 / 100;
         const now   = new Date();
 
