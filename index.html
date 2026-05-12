@@ -340,6 +340,85 @@
             margin-left: 4px; vertical-align: middle;
         }
 
+        /* ── CUENTA REGRESIVA ── */
+        .countdown-card { background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(129,140,248,.04)); border:1px solid rgba(251,191,36,.18); border-radius:var(--r); padding:16px 20px; margin-bottom:12px; text-align:center; }
+        .countdown-lbl { font-size:.58rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--gold); margin-bottom:10px; }
+        .countdown-vals { display:flex; justify-content:center; align-items:baseline; gap:8px; }
+        .cv-item { text-align:center; }
+        .cv-num { font-size:2.1rem; font-weight:700; color:var(--text); letter-spacing:-.03em; line-height:1; font-variant-numeric:tabular-nums; display:block; }
+        .cv-unit { font-size:.55rem; text-transform:uppercase; letter-spacing:1px; color:var(--text3); display:block; margin-top:2px; }
+        .cv-sep { font-size:1.8rem; font-weight:700; color:var(--gold); opacity:.4; line-height:1.1; }
+        .countdown-sub { font-size:.7rem; color:var(--text2); margin-top:10px; }
+        .countdown-sub strong { color:var(--green); }
+
+        /* ── TOASTS ── */
+        .toast-wrap { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:2000; display:flex; flex-direction:column; gap:8px; width:calc(100% - 32px); max-width:400px; pointer-events:none; }
+        .toast { background:var(--bg1); border:1px solid var(--border2); border-radius:var(--r); padding:13px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 8px 32px rgba(0,0,0,.45); animation:toastIn .35s ease-out, toastOut .35s ease-in 3.65s forwards; pointer-events:all; }
+        .toast-icon { font-size:1.5rem; flex-shrink:0; }
+        .toast-title { font-size:.85rem; font-weight:700; color:var(--text); }
+        .toast-desc { font-size:.72rem; color:var(--text2); margin-top:2px; }
+        @keyframes toastIn  { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateY(-8px)} }
+
+        /* ── CONFETTI ── */
+        .confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:3000; overflow:hidden; }
+        .confetti-p { position:absolute; top:-10px; animation:cfFall linear forwards; }
+        @keyframes cfFall { to{transform:translateY(110vh) rotate(720deg);opacity:0} }
+
+        /* ── NOTIFICACIONES MODAL ── */
+        .notif-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1500; display:flex; align-items:flex-end; }
+        .notif-sheet { background:var(--bg1); border:1px solid var(--border); border-radius:var(--r) var(--r) 0 0; padding:24px 20px 44px; width:100%; max-height:88vh; overflow-y:auto; animation:sheetUp .3s ease-out; }
+        @keyframes sheetUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+        .notif-title { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+        .notif-subtitle { font-size:.78rem; color:var(--text2); margin-bottom:20px; }
+        .notif-close { background:none; border:none; color:var(--text2); font-size:1.3rem; cursor:pointer; padding:0; }
+        .notif-row { display:flex; align-items:flex-start; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); gap:14px; }
+        .notif-row:last-of-type { border:none; }
+        .notif-row-lbl { font-size:.85rem; font-weight:600; color:var(--text); }
+        .notif-row-desc { font-size:.72rem; color:var(--text2); margin-top:3px; line-height:1.4; }
+        .notif-days-row { display:flex; align-items:center; gap:6px; margin-top:6px; font-size:.75rem; color:var(--text3); }
+        .notif-days-row input { width:44px; background:rgba(255,255,255,.05); border:1px solid var(--border2); border-radius:6px; color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:.8rem; padding:4px 8px; text-align:center; outline:none; }
+        .toggle { position:relative; width:44px; height:24px; flex-shrink:0; margin-top:2px; }
+        .toggle input { opacity:0; width:0; height:0; }
+        .toggle-sl { position:absolute; inset:0; background:rgba(255,255,255,.1); border-radius:24px; cursor:pointer; transition:.25s; }
+        .toggle input:checked+.toggle-sl { background:var(--green); }
+        .toggle-sl::before { content:''; position:absolute; width:18px; height:18px; top:3px; left:3px; background:#fff; border-radius:50%; transition:.25s; }
+        .toggle input:checked+.toggle-sl::before { transform:translateX(20px); }
+        .notif-perm-banner { background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.2); border-radius:var(--r-sm); padding:10px 14px; font-size:.8rem; color:var(--gold); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+        .btn-perm { background:var(--gold); color:#000; border:none; border-radius:6px; padding:6px 14px; font-family:'Space Grotesk',sans-serif; font-size:.78rem; font-weight:700; cursor:pointer; flex-shrink:0; }
+
+        /* ── ALCANCÍA INTELIGENTE ── */
+        .saver-card { background:var(--glass); border:1px solid var(--border); border-radius:var(--r); margin-bottom:12px; overflow:hidden; }
+        .saver-header { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; cursor:pointer; user-select:none; }
+        .saver-hdr-lbl { font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3); }
+        .saver-total { font-size:1.05rem; font-weight:700; color:var(--green); }
+        .saver-body { padding:0 18px 18px; }
+        .saver-prog-bg { height:8px; background:rgba(255,255,255,.06); border-radius:4px; margin:10px 0 5px; }
+        .saver-prog-fill { height:100%; background:linear-gradient(to right,var(--green),var(--accent)); border-radius:4px; transition:width .8s ease; }
+        .saver-prog-lbl { display:flex; justify-content:space-between; font-size:.65rem; color:var(--text3); margin-bottom:14px; }
+        .saver-add-row { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+        .saver-add-row input { flex:1; min-width:100px; }
+        .btn-saver { padding:10px 14px; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.3); border-radius:var(--r-sm); color:var(--green); font-family:'Space Grotesk',sans-serif; font-size:.82rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:background .2s; }
+        .btn-saver:hover { background:rgba(52,211,153,.2); }
+        .btn-saver-apply { width:100%; margin-top:6px; background:linear-gradient(135deg,rgba(129,140,248,.12),rgba(52,211,153,.08)); border:1px solid rgba(129,140,248,.25); color:var(--accent); }
+        .saver-entries { max-height:200px; overflow-y:auto; }
+        .saver-entry { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.03); font-size:.8rem; }
+        .saver-entry:last-child { border:none; }
+        .saver-entry-date { color:var(--text3); font-size:.68rem; width:68px; flex-shrink:0; }
+        .saver-entry-note { color:var(--text2); flex:1; }
+        .saver-entry-amt { color:var(--green); font-weight:700; }
+        .saver-entry-del { background:none; border:none; color:var(--text3); cursor:pointer; padding:2px 4px; }
+        .saver-empty { color:var(--text3); font-size:.78rem; text-align:center; padding:14px 0; }
+
+        /* ── FAB BELL + BACKUP ── */
+        .fab-bell { position:fixed; bottom:22px; left:18px; z-index:999; background:var(--bg1); border:1px solid var(--border2); border-radius:100px; padding:11px 16px; font-size:.82rem; font-weight:700; color:var(--text2); cursor:pointer; display:flex; align-items:center; gap:7px; transition:all .2s; box-shadow:0 4px 16px rgba(0,0,0,.3); }
+        .fab-bell:hover { border-color:var(--accent); color:var(--accent); }
+        .fab-bell-dot { width:8px; height:8px; border-radius:50%; background:var(--red); box-shadow:0 0 6px var(--red-glow); flex-shrink:0; }
+        .in-app-notif { position:fixed; top:0; left:0; right:0; z-index:1800; background:linear-gradient(135deg,var(--accent),var(--green)); color:#fff; padding:12px 18px; display:flex; align-items:center; gap:12px; animation:slideDown .3s ease-out; cursor:pointer; }
+        @keyframes slideDown { from{transform:translateY(-100%)} to{transform:translateY(0)} }
+        .in-app-notif-icon { font-size:1.2rem; flex-shrink:0; }
+        .in-app-notif-close { margin-left:auto; background:none; border:none; color:rgba(255,255,255,.8); font-size:1.1rem; cursor:pointer; }
+
         /* ── SLIDER DE ABONO ── */
         .slider-wrap { margin-top: 8px; }
         .slider-lbl-row { display:flex; justify-content:space-between; font-size:.6rem; color:var(--text3); margin-top:3px; }
@@ -456,6 +535,21 @@
         </div>
     </div>
 
+    <!-- CUENTA REGRESIVA -->
+    <div class="countdown-card d-none" id="countdownCard">
+        <div class="countdown-lbl">Cuenta regresiva a tu libertad financiera</div>
+        <div class="countdown-vals">
+            <div class="cv-item"><span class="cv-num" id="cdDays">—</span><span class="cv-unit">días</span></div>
+            <div class="cv-sep">:</div>
+            <div class="cv-item"><span class="cv-num" id="cdHours">—</span><span class="cv-unit">h</span></div>
+            <div class="cv-sep">:</div>
+            <div class="cv-item"><span class="cv-num" id="cdMins">—</span><span class="cv-unit">min</span></div>
+            <div class="cv-sep">:</div>
+            <div class="cv-item"><span class="cv-num" id="cdSecs">—</span><span class="cv-unit">seg</span></div>
+        </div>
+        <div class="countdown-sub">Con abono extra de <strong id="cdExtra">—</strong>/mes · <span id="cdDate" style="color:var(--gold)"></span></div>
+    </div>
+
     <!-- TICKER -->
     <div class="ticker-bar">
         <div class="ticker-main">
@@ -565,9 +659,48 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group full">
-                <button onclick="calculate()" class="btn-analyze">Ver análisis completo</button>
+            <div class="form-group full" style="display:flex;gap:8px">
+                <button onclick="calculate()" class="btn-analyze" style="flex:1">Ver análisis completo</button>
+                <button onclick="exportData()" title="Exportar datos" style="padding:13px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:1rem;cursor:pointer" title="Exportar copia de seguridad">💾</button>
+                <label style="padding:13px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);cursor:pointer;font-size:1rem" title="Restaurar copia de seguridad">
+                    📂<input type="file" accept=".json" onchange="importData(this)" style="display:none">
+                </label>
             </div>
+        </div>
+    </div>
+
+    <!-- ALCANCÍA INTELIGENTE -->
+    <div class="saver-card">
+        <div class="saver-header" onclick="toggleSaver()">
+            <span class="saver-hdr-lbl">🐖 Alcancía Inteligente</span>
+            <div style="display:flex;align-items:baseline;gap:6px">
+                <span class="saver-total" id="saverTotal">$ 0</span>
+                <span style="font-size:.62rem;color:var(--text3)">acumulado</span>
+                <span class="hist-toggle" id="saverToggle" style="margin-left:8px">▾</span>
+            </div>
+        </div>
+        <div id="saverBody" class="saver-body d-none">
+            <div style="font-size:.78rem;color:var(--text2);margin-bottom:10px">
+                Guarda montos variables cada mes. Cuando llegues a tu meta, aplica el abono al crédito.
+            </div>
+            <div class="saver-prog-bg"><div class="saver-prog-fill" id="saverProgFill" style="width:0%"></div></div>
+            <div class="saver-prog-lbl">
+                <span id="saverProgPct">0%</span>
+                <span>Meta: <span id="saverGoalLbl">—</span></span>
+            </div>
+            <div class="saver-add-row">
+                <input type="text" inputmode="numeric" id="saverAmt" class="form-control" placeholder="$ monto" oninput="fmtInput(this)">
+                <input type="text" id="saverNote" class="form-control" placeholder="Nota (opcional)" style="font-size:.82rem">
+                <button class="btn-saver" onclick="addSaving()">+ Guardar</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;font-size:.72rem;color:var(--text3)">
+                Meta mensual:
+                <input type="text" inputmode="numeric" id="saverGoal" class="form-control" style="width:130px;font-size:.82rem" placeholder="$ objetivo" oninput="fmtInput(this);renderSaver()">
+            </div>
+            <div class="saver-entries" id="saverEntries"></div>
+            <button class="btn-saver btn-saver-apply" onclick="applySaving()">
+                ¡Alcancía llena! Abonar al crédito →
+            </button>
         </div>
     </div>
 
@@ -685,10 +818,80 @@
         </div>
 
     </div>
-    <!-- FAB: exportar PDF / compartir WhatsApp -->
+    <!-- FAB: exportar PDF -->
     <button class="fab-pdf" id="pdfBtn" onclick="exportPDF()">
         <span class="fab-icon">↑</span> Compartir PDF
     </button>
+
+    <!-- FAB: notificaciones -->
+    <button class="fab-bell" id="fabBell" onclick="openNotifPanel()">
+        <span>🔔</span> Alertas
+        <span class="fab-bell-dot d-none" id="bellDot"></span>
+    </button>
+
+    <!-- MODAL: preferencias de notificaciones -->
+    <div class="notif-overlay d-none" id="notifOverlay" onclick="closeNotifPanel(event)">
+        <div class="notif-sheet" onclick="event.stopPropagation()">
+            <div class="notif-title">
+                Preferencias de Notificaciones
+                <button class="notif-close" onclick="closeNotifPanel()">✕</button>
+            </div>
+            <div class="notif-subtitle">Configura qué alertas quieres recibir. Se muestran al abrir la app.</div>
+
+            <div id="notifPermBanner" class="notif-perm-banner d-none">
+                Activa notificaciones del navegador para recibirlas incluso con la pantalla bloqueada.
+                <button class="btn-perm" onclick="requestBrowserNotif()">Activar</button>
+            </div>
+
+            <div class="notif-row">
+                <div class="notif-row-info">
+                    <div class="notif-row-lbl">Recordatorio de pago</div>
+                    <div class="notif-row-desc">Te avisa cuántos días antes de tu próxima cuota</div>
+                    <div class="notif-days-row">
+                        Alertar
+                        <input type="number" id="notifDays" value="3" min="1" max="15" onchange="saveNotifPrefs()">
+                        días antes
+                    </div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="notifPayment" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+            </div>
+
+            <div class="notif-row">
+                <div class="notif-row-info">
+                    <div class="notif-row-lbl">Meta de alcancía alcanzada</div>
+                    <div class="notif-row-desc">Cuando hayas acumulado suficiente para el abono extra</div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="notifSaver" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+            </div>
+
+            <div class="notif-row">
+                <div class="notif-row-info">
+                    <div class="notif-row-lbl">Hitos de progreso</div>
+                    <div class="notif-row-desc">Al pagar el 25%, 50% y 75% del crédito</div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="notifMilestone" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+            </div>
+
+            <div class="notif-row">
+                <div class="notif-row-info">
+                    <div class="notif-row-lbl">Recordatorio de ahorro mensual</div>
+                    <div class="notif-row-desc">Cuánto debes guardar en la alcancía para tu meta</div>
+                    <div class="notif-days-row">
+                        El día
+                        <input type="number" id="notifSavingDay" value="1" min="1" max="28" onchange="saveNotifPrefs()">
+                        de cada mes
+                    </div>
+                </div>
+                <label class="toggle"><input type="checkbox" id="notifSaving" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOASTS -->
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <!-- CONFETTI -->
+    <div class="confetti-wrap" id="confettiWrap"></div>
 
 </div>
 
@@ -726,8 +929,9 @@ function $set(id, num) {
     if (el && num) el.value = Math.round(+num).toLocaleString('es-CO');
 }
 
+/* Auditoría: sin datos financieros ni fechas personales hardcodeadas.
+   paid/totalTerm son defaults genéricos; todos los valores reales vienen de localStorage. */
 const REF = {
-    date:        new Date('2026-05-05T12:00:00'),
     balance:     0,
     paid:        57,
     totalTerm:   108,
@@ -736,7 +940,6 @@ const REF = {
     payDay:      5,
     originalAmt: 0
 };
-const FIRST_PMT = addMonthsD(REF.date, -(REF.paid - 1));
 const PRESETS   = [0, 50000, 100000, 200000, 500000, 700000, 1000000];
 
 function saveConfig() {
@@ -805,7 +1008,9 @@ function autoFill() {
     renderMilestones(getPaid());
     updateSlider();
     renderHistory();
+    renderSaver();
     quickCalc();
+    checkOnOpenNotifications();
 }
 
 function quickCalc() {
@@ -865,6 +1070,19 @@ function quickCalc() {
     s('insInterest', cop(nextInt));
     s('insExtra',    cop(extra));
     s('insMonths',   saved > 0 ? saved+' cuotas' : '0 cuotas (mismo plazo)');
+
+    // Cuenta regresiva hacia la fecha de libertad
+    if (nd) {
+        let eEnd = addMonths(nd, withE.months - 1);
+        startCountdown(eEnd, extra);
+    }
+
+    // Logros basados en capital saldado
+    let origForAchiev = $v('originalAmt') || REF.originalAmt;
+    if (origForAchiev > 0) {
+        let capPctAchiev = Math.max(0, Math.min(100, (origForAchiev - bal) / origForAchiev * 100));
+        checkAchievements(capPctAchiev, extra);
+    }
 }
 
 function startTicker(dailyInt) {
@@ -1380,6 +1598,297 @@ async function exportPDF() {
         btn.disabled = false;
         btn.innerHTML = '<span class="fab-icon">↑</span> Compartir PDF';
     }
+}
+
+/* ════════════════════════════════════════════════
+   CUENTA REGRESIVA
+   ════════════════════════════════════════════════ */
+let countdownIv = null;
+function startCountdown(endDate, extraAmt) {
+    if (countdownIv) clearInterval(countdownIv);
+    let card = document.getElementById('countdownCard');
+    s('cdExtra', cop(extraAmt));
+    s('cdDate',  fmy(endDate));
+    card.classList.remove('d-none');
+    function tick() {
+        let diff = endDate - Date.now();
+        if (diff <= 0) { clearInterval(countdownIv); return; }
+        let d   = Math.floor(diff / 86400000);
+        let h   = Math.floor((diff % 86400000) / 3600000);
+        let m   = Math.floor((diff % 3600000) / 60000);
+        let sec = Math.floor((diff % 60000) / 1000);
+        s('cdDays',  d.toLocaleString('es-CO'));
+        s('cdHours', String(h).padStart(2,'0'));
+        s('cdMins',  String(m).padStart(2,'0'));
+        s('cdSecs',  String(sec).padStart(2,'0'));
+    }
+    tick();
+    countdownIv = setInterval(tick, 1000);
+}
+
+/* ════════════════════════════════════════════════
+   TOASTS & LOGROS
+   ════════════════════════════════════════════════ */
+function showToast(icon, title, desc, color) {
+    let wrap = document.getElementById('toastWrap');
+    let t = document.createElement('div');
+    t.className = 'toast';
+    if (color) t.style.borderColor = color;
+    t.innerHTML = `<div class="toast-icon">${icon}</div><div><div class="toast-title">${title}</div><div class="toast-desc">${desc}</div></div>`;
+    wrap.prepend(t);
+    setTimeout(() => t.remove(), 4200);
+}
+
+const ACHIEV_KEY = 'lf_achiev';
+function getAchievs() { return JSON.parse(localStorage.getItem(ACHIEV_KEY) || '[]'); }
+function unlockAchiev(id, icon, title, desc, color) {
+    let done = getAchievs();
+    if (done.includes(id)) return;
+    done.push(id);
+    localStorage.setItem(ACHIEV_KEY, JSON.stringify(done));
+    showToast(icon, '¡Logro desbloqueado! ' + title, desc, color);
+}
+function checkAchievements(capPct, extra) {
+    if (capPct >= 25) unlockAchiev('pct25','¼','25% pagado','¡Un cuarto del camino completado!','var(--accent)');
+    if (capPct >= 50) unlockAchiev('pct50','½','¡Mitad del crédito!','Más de la mitad amortizada. ¡Imparable!','var(--accent)');
+    if (capPct >= 75) unlockAchiev('pct75','¾','75% completado','La recta final. ¡Casi libre!','var(--gold)');
+    if (capPct >= 99) { unlockAchiev('free','★','¡CRÉDITO LIQUIDADO!','Eres financieramente libre. ¡Felicidades!','var(--green)'); showConfetti(); }
+    if (extra > 0)    unlockAchiev('extra1','↑','Primer abono extra','Aplicaste tu primer abono extra al capital.','var(--green)');
+}
+
+/* ════════════════════════════════════════════════
+   CONFETTI
+   ════════════════════════════════════════════════ */
+function showConfetti() {
+    let wrap = document.getElementById('confettiWrap');
+    wrap.innerHTML = '';
+    let colors = ['#818cf8','#34d399','#fbbf24','#fb7185','#f59e0b','#60a5fa'];
+    for (let i = 0; i < 90; i++) {
+        let p = document.createElement('div');
+        p.className = 'confetti-p';
+        let size = 4 + Math.random() * 8;
+        p.style.cssText = `left:${Math.random()*100}%;width:${size}px;height:${size}px;background:${colors[i%colors.length]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2.5}s;animation-delay:${Math.random()*.6}s;`;
+        wrap.appendChild(p);
+    }
+    setTimeout(() => wrap.innerHTML = '', 4500);
+}
+
+/* ════════════════════════════════════════════════
+   NOTIFICACIONES
+   ════════════════════════════════════════════════ */
+const NOTIF_KEY = 'lf_notif';
+function getNotifPrefs() {
+    return JSON.parse(localStorage.getItem(NOTIF_KEY) || '{"payment":true,"days":3,"saver":true,"milestone":true,"saving":false,"savingDay":1}');
+}
+function saveNotifPrefs() {
+    let p = {
+        payment:   document.getElementById('notifPayment').checked,
+        days:      parseInt(document.getElementById('notifDays').value) || 3,
+        saver:     document.getElementById('notifSaver').checked,
+        milestone: document.getElementById('notifMilestone').checked,
+        saving:    document.getElementById('notifSaving').checked,
+        savingDay: parseInt(document.getElementById('notifSavingDay').value) || 1,
+    };
+    localStorage.setItem(NOTIF_KEY, JSON.stringify(p));
+}
+function loadNotifPrefs() {
+    let p = getNotifPrefs();
+    document.getElementById('notifPayment').checked   = p.payment;
+    document.getElementById('notifDays').value        = p.days;
+    document.getElementById('notifSaver').checked     = p.saver;
+    document.getElementById('notifMilestone').checked = p.milestone;
+    document.getElementById('notifSaving').checked    = p.saving;
+    document.getElementById('notifSavingDay').value   = p.savingDay;
+}
+function openNotifPanel() {
+    loadNotifPrefs();
+    // Mostrar banner de permiso si no hay permiso
+    let banner = document.getElementById('notifPermBanner');
+    if ('Notification' in window && Notification.permission !== 'granted')
+        banner.classList.remove('d-none');
+    else
+        banner.classList.add('d-none');
+    document.getElementById('notifOverlay').classList.remove('d-none');
+    document.body.style.overflow = 'hidden';
+}
+function closeNotifPanel(e) {
+    if (!e || e.target === document.getElementById('notifOverlay')) {
+        document.getElementById('notifOverlay').classList.add('d-none');
+        document.body.style.overflow = '';
+    }
+}
+async function requestBrowserNotif() {
+    if (!('Notification' in window)) return;
+    let perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+        document.getElementById('notifPermBanner').classList.add('d-none');
+        showBrowserNotif('🔔 Notificaciones activadas', 'Recibirás alertas de pagos y progreso al abrir la app.');
+        showToast('🔔','Notificaciones activadas','Recibirás alertas importantes cuando abras la app.','var(--accent)');
+    }
+}
+function showBrowserNotif(title, body) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body, icon: './icon.svg' });
+    }
+}
+function showInAppNotif(icon, msg, body) {
+    let existing = document.getElementById('inAppNotifBar');
+    if (existing) existing.remove();
+    let bar = document.createElement('div');
+    bar.id = 'inAppNotifBar';
+    bar.className = 'in-app-notif';
+    bar.innerHTML = `<span class="in-app-notif-icon">${icon}</span><div><div style="font-weight:700;font-size:.88rem">${msg}</div><div style="font-size:.75rem;opacity:.85">${body}</div></div><button class="in-app-notif-close" onclick="this.parentElement.remove()">✕</button>`;
+    document.getElementById('app').prepend(bar);
+    setTimeout(() => bar && bar.remove(), 8000);
+}
+function checkOnOpenNotifications() {
+    let p  = getNotifPrefs();
+    let nd = document.getElementById('nextPaymentDate').value;
+    let today = new Date();
+    // Recordatorio de pago
+    if (p.payment && nd) {
+        let daysLeft = Math.ceil((new Date(nd) - today) / 86400000);
+        if (daysLeft > 0 && daysLeft <= p.days) {
+            let msg = `Próximo pago en ${daysLeft} día${daysLeft>1?'s':''} — ${nd}`;
+            let body = `Cuota de ${cop($v('installment'))} el ${nd}`;
+            showInAppNotif('💳', msg, body);
+            showBrowserNotif('💳 ' + msg, body);
+            document.getElementById('bellDot').classList.remove('d-none');
+        }
+    }
+    // Recordatorio de ahorro mensual
+    if (p.saving) {
+        let dayOfMonth = today.getDate();
+        let notifShownKey = 'lf_notif_saving_' + today.getFullYear() + '_' + today.getMonth();
+        if (dayOfMonth >= p.savingDay && !localStorage.getItem(notifShownKey)) {
+            let goal = $v('saverGoal') || $v('extra');
+            if (goal > 0) {
+                localStorage.setItem(notifShownKey, '1');
+                let msg = `Recuerda guardar ${cop(goal)} en tu alcancía este mes`;
+                let body = `Meta para abonar al crédito: ${cop(goal)}/mes`;
+                showInAppNotif('🐖', msg, body);
+                showBrowserNotif('🐖 ' + msg, body);
+            }
+        }
+    }
+}
+
+/* ════════════════════════════════════════════════
+   ALCANCÍA INTELIGENTE
+   ════════════════════════════════════════════════ */
+const SAVER_KEY = 'lf_saver';
+function getSaverData() { return JSON.parse(localStorage.getItem(SAVER_KEY) || '{"entries":[],"goal":0}'); }
+function saveSaverData(d) { localStorage.setItem(SAVER_KEY, JSON.stringify(d)); }
+
+function addSaving() {
+    let amt  = $v('saverAmt');
+    let note = document.getElementById('saverNote').value.trim();
+    if (!amt) { showToast('⚠','Ingresa un monto','Escribe cuánto estás guardando en la alcancía.'); return; }
+    let d = getSaverData();
+    d.entries.push({ date: new Date().toISOString().slice(0,10), amount: amt, note: note || 'Ahorro' });
+    saveSaverData(d);
+    document.getElementById('saverAmt').value = '';
+    document.getElementById('saverNote').value = '';
+    renderSaver();
+    let total = d.entries.reduce((s,e)=>s+e.amount, 0);
+    let goal  = parseFloat(document.getElementById('saverGoal').value.replace(/\./g,'')) || $v('extra');
+    if (goal > 0 && total >= goal) {
+        let p = getNotifPrefs();
+        if (p.saver) {
+            showToast('🐖','¡Alcancía llena!', `Tienes ${cop(total)} ahorrados. ¡Listo para abonar!`,'var(--green)');
+            showBrowserNotif('🐖 ¡Alcancía llena!', `Tienes ${cop(total)} ahorrados para abonar al crédito.`);
+        }
+    } else {
+        showToast('💰','Guardado', `+${cop(amt)} en tu alcancía. Total: ${cop(total)}`, 'var(--green)');
+    }
+}
+function deleteSaving(idx) {
+    let d = getSaverData();
+    d.entries.splice(idx, 1);
+    saveSaverData(d);
+    renderSaver();
+}
+function applySaving() {
+    let d = getSaverData();
+    let total = d.entries.reduce((s,e)=>s+e.amount, 0);
+    if (!total) { showToast('⚠','Alcancía vacía','Primero guarda algunos ahorros.'); return; }
+    $set('extra', total);
+    updateSlider(); saveExtra(); quickCalc();
+    showToast('🎯','¡Abono aplicado!', `${cop(total)} configurado como abono extra. Haz clic en «Ver análisis» para ver el impacto.`, 'var(--accent)');
+    // Reset alcancía
+    d.entries = [];
+    saveSaverData(d);
+    renderSaver();
+}
+function renderSaver() {
+    let d      = getSaverData();
+    let total  = d.entries.reduce((s,e)=>s+e.amount, 0);
+    let goalEl = document.getElementById('saverGoal');
+    let goal   = goalEl ? (parseFloat(goalEl.value.replace(/\./g,'')) || $v('extra') || 0) : 0;
+    if (goal > 0 && !goalEl.value) $set('saverGoal', goal);
+
+    s('saverTotal', cop(total));
+    let pct = goal > 0 ? Math.min(100, total / goal * 100) : 0;
+    let fill = document.getElementById('saverProgFill');
+    if (fill) fill.style.width = pct + '%';
+    s('saverProgPct', Math.round(pct) + '%');
+    s('saverGoalLbl', goal > 0 ? cop(goal) : '—');
+
+    let container = document.getElementById('saverEntries');
+    if (!container) return;
+    if (!d.entries.length) {
+        container.innerHTML = '<div class="saver-empty">Sin ahorros registrados aún. Agrega montos a medida que ahorras.</div>';
+        return;
+    }
+    container.innerHTML = '';
+    [...d.entries].reverse().forEach((e, i) => {
+        let realIdx = d.entries.length - 1 - i;
+        let row = document.createElement('div');
+        row.className = 'saver-entry';
+        row.innerHTML = `<span class="saver-entry-date">${e.date.slice(5)}</span><span class="saver-entry-note">${e.note}</span><span class="saver-entry-amt">${cop(e.amount)}</span><button class="saver-entry-del" onclick="deleteSaving(${realIdx})">✕</button>`;
+        container.appendChild(row);
+    });
+}
+function toggleSaver() {
+    let body   = document.getElementById('saverBody');
+    let toggle = document.getElementById('saverToggle');
+    let isOpen = !body.classList.contains('d-none');
+    body.classList.toggle('d-none', isOpen);
+    toggle.classList.toggle('open', !isOpen);
+    if (!isOpen) renderSaver();
+}
+
+/* ════════════════════════════════════════════════
+   BACKUP / RESTORE
+   ════════════════════════════════════════════════ */
+function exportData() {
+    let data = {};
+    for (let key of Object.keys(localStorage)) {
+        if (key.startsWith('lf_') || key === 'creditExtra') data[key] = localStorage.getItem(key);
+    }
+    let blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    let a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'libertad-financiera-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    showToast('💾','Backup exportado','Guarda el archivo en un lugar seguro.','var(--accent)');
+}
+function importData(input) {
+    let file = input.files[0];
+    if (!file) return;
+    let reader = new FileReader();
+    reader.onload = e => {
+        try {
+            let data = JSON.parse(e.target.result);
+            Object.entries(data).forEach(([k,v]) => localStorage.setItem(k, v));
+            showToast('📂','Datos restaurados','Recargando la app…','var(--green)');
+            setTimeout(() => location.reload(), 1500);
+        } catch {
+            showToast('❌','Error','El archivo no es válido.','var(--red)');
+        }
+    };
+    reader.readAsText(file);
+    input.value = '';
 }
 
 /* ── Helpers de cuotas / plazo ── */
