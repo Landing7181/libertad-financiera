@@ -366,26 +366,52 @@
         @keyframes cfFall { to{transform:translateY(110vh) rotate(720deg);opacity:0} }
 
         /* ── NOTIFICACIONES MODAL ── */
-        .notif-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1500; display:flex; align-items:flex-end; }
-        .notif-sheet { background:var(--bg1); border:1px solid var(--border); border-radius:var(--r) var(--r) 0 0; padding:24px 20px 44px; width:100%; max-height:88vh; overflow-y:auto; animation:sheetUp .3s ease-out; }
+        .notif-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:1500; display:flex; align-items:flex-end; }
+        .notif-sheet { background:var(--bg1); border:1px solid var(--border); border-radius:var(--r) var(--r) 0 0; padding:20px 18px 48px; width:100%; max-height:92vh; overflow-y:auto; animation:sheetUp .3s ease-out; }
         @keyframes sheetUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-        .notif-title { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
-        .notif-subtitle { font-size:.78rem; color:var(--text2); margin-bottom:20px; }
+        .notif-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; }
+        .notif-title-lbl { font-size:.95rem; font-weight:700; color:var(--text); }
+        .notif-subtitle { font-size:.75rem; color:var(--text2); margin-bottom:18px; line-height:1.4; }
         .notif-close { background:none; border:none; color:var(--text2); font-size:1.3rem; cursor:pointer; padding:0; }
-        .notif-row { display:flex; align-items:flex-start; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); gap:14px; }
-        .notif-row:last-of-type { border:none; }
+        /* Secciones */
+        .notif-section { margin-bottom:18px; }
+        .notif-section-hdr { font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); padding-bottom:8px; border-bottom:1px solid rgba(129,140,248,.15); margin-bottom:4px; }
+        /* Filas de configuración */
+        .notif-row { display:flex; align-items:flex-start; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); gap:14px; }
+        .notif-row:last-child { border:none; }
+        .notif-row-info { flex:1; }
         .notif-row-lbl { font-size:.85rem; font-weight:600; color:var(--text); }
-        .notif-row-desc { font-size:.72rem; color:var(--text2); margin-top:3px; line-height:1.4; }
-        .notif-days-row { display:flex; align-items:center; gap:6px; margin-top:6px; font-size:.75rem; color:var(--text3); }
-        .notif-days-row input { width:44px; background:rgba(255,255,255,.05); border:1px solid var(--border2); border-radius:6px; color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:.8rem; padding:4px 8px; text-align:center; outline:none; }
+        .notif-row-desc { font-size:.7rem; color:var(--text2); margin-top:2px; line-height:1.4; }
+        .notif-days-row { display:flex; align-items:center; gap:6px; margin-top:6px; font-size:.74rem; color:var(--text3); flex-wrap:wrap; }
+        .notif-days-row input[type=number] { width:44px; background:rgba(255,255,255,.05); border:1px solid var(--border2); border-radius:6px; color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:.8rem; padding:4px 8px; text-align:center; outline:none; }
+        .notif-days-row input[type=time] { background:rgba(255,255,255,.05); border:1px solid var(--border2); border-radius:6px; color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:.8rem; padding:5px 8px; outline:none; }
+        /* Preview de notificación */
+        .notif-preview { background:rgba(129,140,248,.06); border:1px solid rgba(129,140,248,.15); border-radius:var(--r-sm); padding:8px 12px; margin-top:8px; font-size:.72rem; color:var(--text2); line-height:1.45; }
+        .notif-preview-title { font-weight:700; color:var(--text); font-size:.78rem; margin-bottom:2px; }
+        /* Toggle switch */
         .toggle { position:relative; width:44px; height:24px; flex-shrink:0; margin-top:2px; }
         .toggle input { opacity:0; width:0; height:0; }
         .toggle-sl { position:absolute; inset:0; background:rgba(255,255,255,.1); border-radius:24px; cursor:pointer; transition:.25s; }
         .toggle input:checked+.toggle-sl { background:var(--green); }
         .toggle-sl::before { content:''; position:absolute; width:18px; height:18px; top:3px; left:3px; background:#fff; border-radius:50%; transition:.25s; }
         .toggle input:checked+.toggle-sl::before { transform:translateX(20px); }
-        .notif-perm-banner { background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.2); border-radius:var(--r-sm); padding:10px 14px; font-size:.8rem; color:var(--gold); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+        /* Horario silencioso */
+        .notif-quiet-row { display:flex; align-items:center; gap:10px; padding:10px 0; flex-wrap:wrap; font-size:.78rem; color:var(--text2); }
+        /* Banners */
+        .notif-perm-banner { background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.2); border-radius:var(--r-sm); padding:10px 14px; font-size:.8rem; color:var(--gold); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+        .notif-sync-info { font-size:.74rem; padding:8px 12px; border-radius:var(--r-sm); margin-bottom:14px; }
+        .notif-sync-info.ok { color:var(--green); background:rgba(52,211,153,.08); border:1px solid rgba(52,211,153,.2); }
+        .notif-sync-info.warn { color:var(--gold); background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.2); }
         .btn-perm { background:var(--gold); color:#000; border:none; border-radius:6px; padding:6px 14px; font-family:'Space Grotesk',sans-serif; font-size:.78rem; font-weight:700; cursor:pointer; flex-shrink:0; }
+        /* Log de notificaciones */
+        .notif-log { max-height:200px; overflow-y:auto; }
+        .notif-log-entry { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.03); }
+        .notif-log-entry:last-child { border:none; }
+        .notif-log-icon { font-size:1.1rem; flex-shrink:0; }
+        .notif-log-title { font-size:.8rem; font-weight:600; color:var(--text); }
+        .notif-log-body { font-size:.7rem; color:var(--text2); margin-top:1px; line-height:1.3; }
+        .notif-log-time { font-size:.62rem; color:var(--text3); margin-top:2px; }
+        .notif-log-empty { color:var(--text3); font-size:.78rem; text-align:center; padding:12px 0; }
 
         /* ── ALCANCÍA INTELIGENTE ── */
         .saver-card { background:var(--glass); border:1px solid var(--border); border-radius:var(--r); margin-bottom:12px; overflow:hidden; }
@@ -932,61 +958,110 @@
         <span class="fab-bell-dot d-none" id="bellDot"></span>
     </button>
 
-    <!-- MODAL: preferencias de notificaciones -->
+    <!-- MODAL: notificaciones inteligentes -->
     <div class="notif-overlay d-none" id="notifOverlay" onclick="closeNotifPanel(event)">
         <div class="notif-sheet" onclick="event.stopPropagation()">
-            <div class="notif-title">
-                Preferencias de Notificaciones
+
+            <div class="notif-header">
+                <div>
+                    <div class="notif-title-lbl">🔔 Notificaciones Inteligentes</div>
+                    <div class="notif-subtitle">Las alertas se comprueban al abrir la app y en segundo plano (si está instalada como PWA).</div>
+                </div>
                 <button class="notif-close" onclick="closeNotifPanel()">✕</button>
             </div>
-            <div class="notif-subtitle">Configura qué alertas quieres recibir. Se muestran al abrir la app.</div>
 
+            <!-- Banner permiso del navegador -->
             <div id="notifPermBanner" class="notif-perm-banner d-none">
-                Activa notificaciones del navegador para recibirlas incluso con la pantalla bloqueada.
+                Activa las notificaciones del sistema para recibir alertas incluso con la pantalla apagada.
                 <button class="btn-perm" onclick="requestBrowserNotif()">Activar</button>
             </div>
 
-            <div class="notif-row">
-                <div class="notif-row-info">
-                    <div class="notif-row-lbl">Recordatorio de pago</div>
-                    <div class="notif-row-desc">Te avisa cuántos días antes de tu próxima cuota</div>
-                    <div class="notif-days-row">
-                        Alertar
-                        <input type="number" id="notifDays" value="3" min="1" max="15" onchange="saveNotifPrefs()">
-                        días antes
+            <!-- Estado del Periodic Background Sync -->
+            <div id="periodicSyncInfo" class="notif-sync-info d-none"></div>
+
+            <!-- ── SECCIÓN: PAGOS ── -->
+            <div class="notif-section">
+                <div class="notif-section-hdr">💳 Cuotas y pagos</div>
+                <div class="notif-row">
+                    <div class="notif-row-info">
+                        <div class="notif-row-lbl">Recordatorio de cuota</div>
+                        <div class="notif-row-desc">Alerta contextual con el estado actual de tu alcancía</div>
+                        <div class="notif-days-row">
+                            Avisar <input type="number" id="notifDays" value="3" min="1" max="15" onchange="saveNotifPrefs();updateNotifPreviews()"> días antes
+                        </div>
+                        <div id="prevPayment" class="notif-preview d-none"></div>
                     </div>
+                    <label class="toggle"><input type="checkbox" id="notifPayment" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
                 </div>
-                <label class="toggle"><input type="checkbox" id="notifPayment" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
             </div>
 
-            <div class="notif-row">
-                <div class="notif-row-info">
-                    <div class="notif-row-lbl">Meta de alcancía alcanzada</div>
-                    <div class="notif-row-desc">Cuando hayas acumulado suficiente para el abono extra</div>
-                </div>
-                <label class="toggle"><input type="checkbox" id="notifSaver" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
-            </div>
-
-            <div class="notif-row">
-                <div class="notif-row-info">
-                    <div class="notif-row-lbl">Hitos de progreso</div>
-                    <div class="notif-row-desc">Al pagar el 25%, 50% y 75% del crédito</div>
-                </div>
-                <label class="toggle"><input type="checkbox" id="notifMilestone" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
-            </div>
-
-            <div class="notif-row">
-                <div class="notif-row-info">
-                    <div class="notif-row-lbl">Recordatorio de ahorro mensual</div>
-                    <div class="notif-row-desc">Cuánto debes guardar en la alcancía para tu meta</div>
-                    <div class="notif-days-row">
-                        El día
-                        <input type="number" id="notifSavingDay" value="1" min="1" max="28" onchange="saveNotifPrefs()">
-                        de cada mes
+            <!-- ── SECCIÓN: ALCANCÍA ── -->
+            <div class="notif-section">
+                <div class="notif-section-hdr">🐖 Alcancía y hábito de ahorro</div>
+                <div class="notif-row">
+                    <div class="notif-row-info">
+                        <div class="notif-row-lbl">¡Meta del mes alcanzada!</div>
+                        <div class="notif-row-desc">Cuando tu alcancía llega al monto objetivo</div>
                     </div>
+                    <label class="toggle"><input type="checkbox" id="notifSaver" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
                 </div>
-                <label class="toggle"><input type="checkbox" id="notifSaving" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+                <div class="notif-row">
+                    <div class="notif-row-info">
+                        <div class="notif-row-lbl">Recordatorio diario de ahorro</div>
+                        <div class="notif-row-desc">Si aún no has guardado nada hoy, te lo recuerda</div>
+                        <div class="notif-days-row">
+                            A las <input type="time" id="notifDailyHour" value="08:00" onchange="saveNotifPrefs()">
+                        </div>
+                    </div>
+                    <label class="toggle"><input type="checkbox" id="notifDaily" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+                </div>
+                <div class="notif-row">
+                    <div class="notif-row-info">
+                        <div class="notif-row-lbl">🔥 Racha en riesgo</div>
+                        <div class="notif-row-desc">Si llevas 3+ días seguidos ahorrando y hoy no has guardado nada, alerta a las 7pm</div>
+                    </div>
+                    <label class="toggle"><input type="checkbox" id="notifStreak" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+                </div>
             </div>
+
+            <!-- ── SECCIÓN: PROGRESO ── -->
+            <div class="notif-section">
+                <div class="notif-section-hdr">📊 Progreso del crédito</div>
+                <div class="notif-row">
+                    <div class="notif-row-info">
+                        <div class="notif-row-lbl">Hitos de capital (25%, 50%, 75%)</div>
+                        <div class="notif-row-desc">Celebra cada cuarto del crédito amortizado</div>
+                    </div>
+                    <label class="toggle"><input type="checkbox" id="notifMilestone" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+                </div>
+                <div class="notif-row">
+                    <div class="notif-row-info">
+                        <div class="notif-row-lbl">Resumen semanal (viernes)</div>
+                        <div class="notif-row-desc">Cada viernes: cuánto ahorraste y el capital amortizado</div>
+                    </div>
+                    <label class="toggle"><input type="checkbox" id="notifWeekly" onchange="saveNotifPrefs()"><span class="toggle-sl"></span></label>
+                </div>
+            </div>
+
+            <!-- ── SECCIÓN: HORARIO SILENCIOSO ── -->
+            <div class="notif-section">
+                <div class="notif-section-hdr">🌙 Horario silencioso</div>
+                <div class="notif-quiet-row">
+                    Sin alertas de
+                    <input type="time" id="notifQuietStart" value="22:00" onchange="saveNotifPrefs()">
+                    a
+                    <input type="time" id="notifQuietEnd" value="07:00" onchange="saveNotifPrefs()">
+                </div>
+            </div>
+
+            <!-- ── SECCIÓN: LOG ── -->
+            <div class="notif-section">
+                <div class="notif-section-hdr">📋 Últimas alertas enviadas</div>
+                <div class="notif-log" id="notifLog">
+                    <div class="notif-log-empty">Sin alertas recientes</div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -1777,62 +1852,168 @@ function showConfetti() {
 }
 
 /* ════════════════════════════════════════════════
-   NOTIFICACIONES
+   SISTEMA DE NOTIFICACIONES INTELIGENTES
    ════════════════════════════════════════════════ */
-const NOTIF_KEY = 'lf_notif';
+const NOTIF_KEY     = 'lf_notif';
+const NOTIF_LOG_KEY = 'lf_notif_log';
+const NOTIF_SHOWN   = 'lf_notif_shown';
+
 function getNotifPrefs() {
-    return JSON.parse(localStorage.getItem(NOTIF_KEY) || '{"payment":true,"days":3,"saver":true,"milestone":true,"saving":false,"savingDay":1}');
+    return JSON.parse(localStorage.getItem(NOTIF_KEY) || JSON.stringify({
+        payment:true, paymentDays:3,
+        saver:true,
+        daily:true,  dailyHour:'08:00',
+        streak:true,
+        milestone:true,
+        weekly:false,
+        quietStart:'22:00', quietEnd:'07:00'
+    }));
 }
 function saveNotifPrefs() {
+    let get = id => document.getElementById(id);
     let p = {
-        payment:   document.getElementById('notifPayment').checked,
-        days:      parseInt(document.getElementById('notifDays').value) || 3,
-        saver:     document.getElementById('notifSaver').checked,
-        milestone: document.getElementById('notifMilestone').checked,
-        saving:    document.getElementById('notifSaving').checked,
-        savingDay: parseInt(document.getElementById('notifSavingDay').value) || 1,
+        payment:    get('notifPayment').checked,
+        paymentDays:parseInt(get('notifDays').value)||3,
+        saver:      get('notifSaver').checked,
+        daily:      get('notifDaily').checked,
+        dailyHour:  get('notifDailyHour').value||'08:00',
+        streak:     get('notifStreak').checked,
+        milestone:  get('notifMilestone').checked,
+        weekly:     get('notifWeekly').checked,
+        quietStart: get('notifQuietStart').value||'22:00',
+        quietEnd:   get('notifQuietEnd').value||'07:00',
     };
     localStorage.setItem(NOTIF_KEY, JSON.stringify(p));
+    saveNotifState();
 }
 function loadNotifPrefs() {
     let p = getNotifPrefs();
-    document.getElementById('notifPayment').checked   = p.payment;
-    document.getElementById('notifDays').value        = p.days;
-    document.getElementById('notifSaver').checked     = p.saver;
-    document.getElementById('notifMilestone').checked = p.milestone;
-    document.getElementById('notifSaving').checked    = p.saving;
-    document.getElementById('notifSavingDay').value   = p.savingDay;
+    let set = (id, val) => { let el=document.getElementById(id); if(el) el[typeof val==='boolean'?'checked':'value']=val; };
+    set('notifPayment',    p.payment);
+    set('notifDays',       p.paymentDays||3);
+    set('notifSaver',      p.saver);
+    set('notifDaily',      p.daily!==false);
+    set('notifDailyHour',  p.dailyHour||'08:00');
+    set('notifStreak',     p.streak!==false);
+    set('notifMilestone',  p.milestone);
+    set('notifWeekly',     !!p.weekly);
+    set('notifQuietStart', p.quietStart||'22:00');
+    set('notifQuietEnd',   p.quietEnd||'07:00');
 }
-function openNotifPanel() {
-    loadNotifPrefs();
-    // Mostrar banner de permiso si no hay permiso
-    let banner = document.getElementById('notifPermBanner');
-    if ('Notification' in window && Notification.permission !== 'granted')
-        banner.classList.remove('d-none');
-    else
-        banner.classList.add('d-none');
-    document.getElementById('notifOverlay').classList.remove('d-none');
-    document.body.style.overflow = 'hidden';
+
+/* ── Estado SW readable (Cache API) ── */
+async function saveNotifState() {
+    try {
+        let orig = $v('originalAmt') || REF.originalAmt;
+        let bal  = $v('balance');
+        let state = {
+            prefs: getNotifPrefs(),
+            data: {
+                nextPaymentDate: document.getElementById('nextPaymentDate').value || '',
+                installment:     $v('installment'),
+                monthGoal:       getGoal(),
+                monthSaved:      monthTotal(),
+                currentStreak:   getSaverData().streak.current || 0,
+                savedToday:      monthEntries().some(e => e.date === todayStr()),
+                capPct:          orig > 0 ? Math.max(0, Math.min(100, (orig - bal) / orig * 100)) : 0,
+            },
+            shown: JSON.parse(localStorage.getItem(NOTIF_SHOWN) || '{}')
+        };
+        let cache = await caches.open('lf-notif-v1');
+        await cache.put('/notif-state', new Response(JSON.stringify(state), {
+            headers: { 'Content-Type': 'application/json' }
+        }));
+    } catch(e) { /* cache API no disponible */ }
 }
-function closeNotifPanel(e) {
-    if (!e || e.target === document.getElementById('notifOverlay')) {
-        document.getElementById('notifOverlay').classList.add('d-none');
-        document.body.style.overflow = '';
+
+/* ── Log de notificaciones ── */
+function addNotifLog(icon, title, body) {
+    let log = JSON.parse(localStorage.getItem(NOTIF_LOG_KEY) || '[]');
+    log.unshift({ icon, title, body, ts: new Date().toISOString() });
+    if (log.length > 20) log = log.slice(0, 20);
+    localStorage.setItem(NOTIF_LOG_KEY, JSON.stringify(log));
+}
+function renderNotifLog() {
+    let log = JSON.parse(localStorage.getItem(NOTIF_LOG_KEY) || '[]');
+    let el  = document.getElementById('notifLog');
+    if (!el) return;
+    if (!log.length) { el.innerHTML = '<div class="notif-log-empty">Sin alertas recientes</div>'; return; }
+    el.innerHTML = log.slice(0, 8).map(e => {
+        let d    = new Date(e.ts);
+        let when = d.toLocaleDateString('es-CO', {day:'2-digit', month:'short'}) + ' ' +
+                   d.toLocaleTimeString('es-CO', {hour:'2-digit', minute:'2-digit'});
+        return `<div class="notif-log-entry">
+            <div class="notif-log-icon">${e.icon}</div>
+            <div>
+                <div class="notif-log-title">${e.title}</div>
+                <div class="notif-log-body">${e.body}</div>
+                <div class="notif-log-time">${when}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+/* ── Preview contextual ── */
+function updateNotifPreviews() {
+    let days = parseInt((document.getElementById('notifDays')||{}).value) || 3;
+    let nd   = document.getElementById('nextPaymentDate').value;
+    let inst = $v('installment');
+    let saved= monthTotal(), goal=getGoal();
+    let pct  = goal > 0 ? Math.min(100, Math.round(saved / goal * 100)) : 0;
+    let alc  = pct >= 100 ? '🐖 ¡Alcancía lista!' : (goal > 0 ? `🐖 Alcancía al ${pct}%` : '');
+    let prev = document.getElementById('prevPayment');
+    if (prev) {
+        if (nd && inst) {
+            prev.innerHTML = `<div class="notif-preview-title">💳 Cuota en ${days} día${days>1?'s':''}</div>${alc ? alc + ' · ' : ''}Cuota de ${cop(inst)} el ${nd}`;
+            prev.classList.remove('d-none');
+        } else {
+            prev.classList.add('d-none');
+        }
     }
 }
-async function requestBrowserNotif() {
-    if (!('Notification' in window)) return;
-    let perm = await Notification.requestPermission();
-    if (perm === 'granted') {
-        document.getElementById('notifPermBanner').classList.add('d-none');
-        showBrowserNotif('🔔 Notificaciones activadas', 'Recibirás alertas de pagos y progreso al abrir la app.');
-        showToast('🔔','Notificaciones activadas','Recibirás alertas importantes cuando abras la app.','var(--accent)');
+
+/* ── Registrar Periodic Background Sync ── */
+async function registerPeriodicSync() {
+    let infoEl = document.getElementById('periodicSyncInfo');
+    try {
+        if (!('serviceWorker' in navigator)) return;
+        let reg = await navigator.serviceWorker.ready;
+        if (!('periodicSync' in reg)) {
+            if (infoEl) { infoEl.textContent='ℹ Las alertas se mostrarán al abrir la app (el navegador no soporta sync en segundo plano).'; infoEl.className='notif-sync-info warn'; infoEl.classList.remove('d-none'); }
+            return;
+        }
+        let status = await navigator.permissions.query({ name: 'periodic-background-sync' });
+        if (status.state === 'granted') {
+            await reg.periodicSync.register('smart-notif', { minInterval: 3 * 60 * 60 * 1000 });
+            if (infoEl) { infoEl.textContent='✓ Alertas en segundo plano activas (revisión cada ~3h, incluso con la app cerrada).'; infoEl.className='notif-sync-info ok'; infoEl.classList.remove('d-none'); }
+        } else {
+            if (infoEl) { infoEl.textContent='ℹ Alertas al abrir la app. Para recibir en segundo plano instálala como PWA y concede el permiso.'; infoEl.className='notif-sync-info warn'; infoEl.classList.remove('d-none'); }
+        }
+    } catch(e) {
+        if (infoEl) { infoEl.textContent='ℹ Alertas disponibles al abrir la app.'; infoEl.className='notif-sync-info warn'; infoEl.classList.remove('d-none'); }
     }
+}
+
+/* ── Mostrar notificación via SW (aparece en barra de estado) ── */
+async function showSWNotif(icon, title, body, tag) {
+    try {
+        if (Notification.permission !== 'granted') return;
+        let reg = await navigator.serviceWorker.ready;
+        await reg.showNotification(title, {
+            body, tag, icon:'./icon.svg', badge:'./icon.svg',
+            vibrate:[200,100,200], data:{url:'./'}
+        });
+    } catch(e) {
+        if ('Notification' in window && Notification.permission === 'granted')
+            new Notification(title, { body, icon:'./icon.svg' });
+    }
+    addNotifLog(icon, title, body);
+    let dot = document.getElementById('bellDot');
+    if (dot) dot.classList.remove('d-none');
 }
 function showBrowserNotif(title, body) {
-    if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(title, { body, icon: './icon.svg' });
-    }
+    if ('Notification' in window && Notification.permission === 'granted')
+        new Notification(title, { body, icon:'./icon.svg' });
 }
 function showInAppNotif(icon, msg, body) {
     let existing = document.getElementById('inAppNotifBar');
@@ -1842,37 +2023,120 @@ function showInAppNotif(icon, msg, body) {
     bar.className = 'in-app-notif';
     bar.innerHTML = `<span class="in-app-notif-icon">${icon}</span><div><div style="font-weight:700;font-size:.88rem">${msg}</div><div style="font-size:.75rem;opacity:.85">${body}</div></div><button class="in-app-notif-close" onclick="this.parentElement.remove()">✕</button>`;
     document.getElementById('app').prepend(bar);
-    setTimeout(() => bar && bar.remove(), 8000);
+    setTimeout(() => bar && bar.remove(), 9000);
 }
+
+/* ── Abrir/cerrar panel ── */
+function openNotifPanel() {
+    loadNotifPrefs();
+    let hasPerm = 'Notification' in window && Notification.permission === 'granted';
+    document.getElementById('notifPermBanner').classList.toggle('d-none', hasPerm);
+    document.getElementById('notifOverlay').classList.remove('d-none');
+    document.body.style.overflow = 'hidden';
+    updateNotifPreviews();
+    renderNotifLog();
+    saveNotifState();
+    if (hasPerm) registerPeriodicSync();
+}
+function closeNotifPanel(e) {
+    if (!e || e.target === document.getElementById('notifOverlay')) {
+        document.getElementById('notifOverlay').classList.add('d-none');
+        document.body.style.overflow = '';
+    }
+}
+async function requestBrowserNotif() {
+    if (!('Notification' in window)) { showToast('⚠','No disponible','Tu navegador no soporta notificaciones.'); return; }
+    let perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+        document.getElementById('notifPermBanner').classList.add('d-none');
+        showToast('🔔','Notificaciones activadas','Recibirás alertas inteligentes de pagos, alcancía y progreso.','var(--accent)');
+        await showSWNotif('🔔','🔔 ¡Alertas activadas!','Recibirás recordatorios de pago, alcancía y progreso del crédito.','welcome');
+        await registerPeriodicSync();
+        saveNotifState();
+    } else {
+        showToast('⚠','Permiso denegado','Ve a Configuración del navegador para activar notificaciones.','var(--red)');
+    }
+}
+
+/* ── Check inteligente al abrir la app ── */
 function checkOnOpenNotifications() {
-    let p  = getNotifPrefs();
-    let nd = document.getElementById('nextPaymentDate').value;
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    let p     = getNotifPrefs();
+    let nd    = document.getElementById('nextPaymentDate').value;
     let today = new Date();
-    // Recordatorio de pago
+    let h     = today.getHours();
+    let tStr  = todayStr();
+    let shown = JSON.parse(localStorage.getItem(NOTIF_SHOWN) || '{}');
+    let changed = false;
+
+    // Horario silencioso
+    let qS = parseInt((p.quietStart||'22:00').split(':')[0]);
+    let qE = parseInt((p.quietEnd  ||'07:00').split(':')[0]);
+    let inQ = qS > qE ? (h >= qS || h < qE) : (h >= qS && h < qE);
+    if (inQ) return;
+
+    // ── Recordatorio de pago ──
     if (p.payment && nd) {
-        let daysLeft = Math.ceil((new Date(nd) - today) / 86400000);
-        if (daysLeft > 0 && daysLeft <= p.days) {
-            let msg = `Próximo pago en ${daysLeft} día${daysLeft>1?'s':''} — ${nd}`;
-            let body = `Cuota de ${cop($v('installment'))} el ${nd}`;
+        let dLeft = Math.ceil((new Date(nd) - today) / 86400000);
+        let key   = 'pay_' + tStr;
+        if (dLeft > 0 && dLeft <= (p.paymentDays||3) && !shown[key]) {
+            let saved=monthTotal(), goal=getGoal();
+            let pct=goal>0?Math.min(100,Math.round(saved/goal*100)):0;
+            let alc=pct>=100?'🐖 ¡Alcancía lista!':(goal>0?`🐖 Alcancía al ${pct}% — faltan ${cop(goal-saved)}`:'');
+            let msg=`💳 Cuota en ${dLeft} día${dLeft>1?'s':''}`;
+            let body=(alc?alc+' · ':'')+`Cuota de ${cop($v('installment'))} el ${nd}`;
             showInAppNotif('💳', msg, body);
-            showBrowserNotif('💳 ' + msg, body);
-            document.getElementById('bellDot').classList.remove('d-none');
+            showSWNotif('💳', msg, body, 'payment');
+            shown[key]=true; changed=true;
         }
     }
-    // Recordatorio de ahorro mensual
-    if (p.saving) {
-        let dayOfMonth = today.getDate();
-        let notifShownKey = 'lf_notif_saving_' + today.getFullYear() + '_' + today.getMonth();
-        if (dayOfMonth >= p.savingDay && !localStorage.getItem(notifShownKey)) {
-            let goal = $v('saverGoal') || $v('extra');
-            if (goal > 0) {
-                localStorage.setItem(notifShownKey, '1');
-                let msg = `Recuerda guardar ${cop(goal)} en tu alcancía este mes`;
-                let body = `Meta para abonar al crédito: ${cop(goal)}/mes`;
+
+    // ── Nudge diario de ahorro ──
+    if (p.daily && !monthEntries().some(e=>e.date===tStr)) {
+        let dH  = parseInt((p.dailyHour||'08:00').split(':')[0]);
+        let key = 'daily_' + tStr;
+        if (h >= dH && h < 20 && !shown[key]) {
+            let goal=getGoal(), dailyT=goal>0?Math.ceil(goal/30):0;
+            if (dailyT > 0) {
+                let streak=getSaverData().streak.current||0;
+                let msg=`☀️ Meta de hoy: ${cop(dailyT)}`;
+                let body=`Llevas ${cop(monthTotal())} este mes${streak>0?' · 🔥 '+streak+' días de racha':''}.`;
                 showInAppNotif('🐖', msg, body);
-                showBrowserNotif('🐖 ' + msg, body);
+                showSWNotif('🐖', msg, body+' ¡Guarda algo hoy!', 'daily');
+                shown[key]=true; changed=true;
             }
         }
+    }
+
+    // ── Racha en riesgo ──
+    if (p.streak) {
+        let streak=getSaverData().streak.current||0;
+        let key='streak_'+tStr;
+        if (streak>=3 && !monthEntries().some(e=>e.date===tStr) && h>=19 && !shown[key]) {
+            let msg=`🔥 Racha de ${streak} días en riesgo`;
+            showInAppNotif('🔥', msg, '¡Guarda algo antes de medianoche para mantener tu racha!');
+            showSWNotif('🔥', msg, 'Guarda algo en tu alcancía hoy para no perder tu racha.', 'streak');
+            shown[key]=true; changed=true;
+        }
+    }
+
+    // ── Resumen semanal (viernes) ──
+    if (p.weekly && today.getDay()===5) {
+        let key='weekly_'+tStr;
+        if (!shown[key]) {
+            let orig=$v('originalAmt')||REF.originalAmt, bal=$v('balance');
+            let capPct=orig>0?Math.max(0,(orig-bal)/orig*100):0;
+            let msg='📊 Resumen semanal';
+            let body=`Este mes: ${cop(monthTotal())}${getGoal()>0?' de '+cop(getGoal()):''}. Capital: ${capPct.toFixed(1)}% amortizado.`;
+            showInAppNotif('📊', msg, body);
+            showSWNotif('📊', msg, body, 'weekly');
+            shown[key]=true; changed=true;
+        }
+    }
+
+    if (changed) {
+        localStorage.setItem(NOTIF_SHOWN, JSON.stringify(shown));
+        saveNotifState();
     }
 }
 
