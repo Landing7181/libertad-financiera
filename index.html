@@ -340,6 +340,36 @@
             margin-left: 4px; vertical-align: middle;
         }
 
+        /* ── SLIDER DE ABONO ── */
+        .slider-wrap { margin-top: 8px; }
+        .slider-lbl-row { display:flex; justify-content:space-between; font-size:.6rem; color:var(--text3); margin-top:3px; }
+        input[type=range] { -webkit-appearance:none; appearance:none; width:100%; height:5px; border-radius:3px; background:var(--border2); outline:none; cursor:pointer; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--green); border:2px solid var(--bg); box-shadow:0 0 0 3px var(--green-glow); cursor:pointer; }
+        input[type=range]::-moz-range-thumb { width:18px; height:18px; border:2px solid var(--bg); border-radius:50%; background:var(--green); box-shadow:0 0 0 3px var(--green-glow); cursor:pointer; }
+
+        /* ── HISTORIAL ── */
+        .hist-section { background:var(--glass); border:1px solid var(--border); border-radius:var(--r); margin-bottom:12px; }
+        .hist-header { display:flex; justify-content:space-between; align-items:center; padding:13px 18px; cursor:pointer; user-select:none; }
+        .hist-hdr-lbl { font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3); }
+        .hist-hdr-count { font-size:.7rem; color:var(--accent); }
+        .hist-toggle { color:var(--text3); font-size:.75rem; transition:transform .2s; }
+        .hist-toggle.open { transform:rotate(180deg); }
+        .hist-body { padding:0 16px 14px; }
+        .hist-row { display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.03); }
+        .hist-row:last-child { border:none; }
+        .hist-date { color:var(--text3); width:64px; flex-shrink:0; font-size:.7rem; }
+        .hist-bar-wrap { flex:1; height:5px; background:rgba(255,255,255,0.06); border-radius:3px; }
+        .hist-bar-fill { height:100%; background:linear-gradient(to right,var(--red),var(--accent)); border-radius:3px; transition:width .6s ease; }
+        .hist-val { color:var(--text); font-weight:600; width:88px; text-align:right; flex-shrink:0; font-size:.78rem; }
+        .hist-diff { width:68px; text-align:right; flex-shrink:0; font-size:.7rem; }
+        .hist-empty { color:var(--text3); font-size:.78rem; text-align:center; padding:14px 0; }
+
+        /* ── CALCULADORA INVERSA ── */
+        .inverse-result { font-size:1.65rem; font-weight:700; color:var(--gold); letter-spacing:-.02em; line-height:1.1; margin:4px 0; }
+        .inverse-detail { font-size:.75rem; color:var(--text2); margin-top:3px; }
+        .btn-apply { margin-top:8px; padding:7px 14px; background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.3); border-radius:var(--r-sm); color:var(--green); font-family:'Space Grotesk',sans-serif; font-size:.8rem; font-weight:700; cursor:pointer; transition:background .2s; }
+        .btn-apply:hover { background:rgba(52,211,153,0.2); }
+
         /* ── RESPONSIVE MOBILE ── */
         @media (max-width: 600px) {
             #app { padding: 12px 10px 80px; }
@@ -461,6 +491,18 @@
         <div class="ms-row" id="msRow"></div>
     </div>
 
+    <!-- HISTORIAL DE SALDOS -->
+    <div class="hist-section">
+        <div class="hist-header" onclick="toggleHistory()">
+            <span class="hist-hdr-lbl">Historial de saldos</span>
+            <div style="display:flex;align-items:center;gap:10px">
+                <span class="hist-hdr-count" id="histCount"></span>
+                <span class="hist-toggle" id="histToggle">▾</span>
+            </div>
+        </div>
+        <div id="histBody" class="hist-body d-none"></div>
+    </div>
+
     <!-- NOTICE (hidden by default) -->
     <div id="estimatedNotice" class="notice-bar d-none">
         ⚠ Saldo estimado al <span id="noticeDate"></span>. Verifica con tu banco.
@@ -499,13 +541,52 @@
                        oninput="saveConfig()">
             </div>
             <div class="form-group">
+                <label class="form-label">Cuotas pagadas</label>
+                <input type="number" id="paidCount" class="form-control" placeholder="57"
+                       oninput="saveConfig();updateBadgeAndRing()">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Plazo total (cuotas)</label>
+                <input type="number" id="termCount" class="form-control" placeholder="108"
+                       oninput="saveConfig();updateBadgeAndRing()">
+            </div>
+            <div class="form-group">
                 <label class="form-label hi">Abono extra ($/mes)</label>
                 <input type="text" inputmode="numeric" id="extra" class="form-control" placeholder="0"
-                       oninput="fmtInput(this);saveExtra();quickCalc()">
+                       oninput="fmtInput(this);updateSlider();saveExtra();quickCalc()">
                 <span class="form-hint">Adelanta cuotas sin cambiar la cuota fija</span>
+                <div class="slider-wrap">
+                    <input type="range" id="extraSlider" min="0" max="1500000" step="10000"
+                           oninput="syncSlider(this)">
+                    <div class="slider-lbl-row">
+                        <span>$ 0</span>
+                        <span id="sliderLbl" class="c-green fw-bold">$ 0</span>
+                        <span>$ 1.500.000</span>
+                    </div>
+                </div>
             </div>
             <div class="form-group full">
                 <button onclick="calculate()" class="btn-analyze">Ver análisis completo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALCULADORA INVERSA -->
+    <div class="form-card">
+        <div class="section-title">¿Cuándo quieres ser libre?</div>
+        <div class="form-grid">
+            <div class="form-group span2">
+                <label class="form-label">Fecha objetivo de liquidación</label>
+                <input type="month" id="targetDate" class="form-control" oninput="calcInverse()">
+                <span class="form-hint">Calculamos cuánto extra necesitas para quedar libre ese mes</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label hi">Abono extra necesario</label>
+                <div class="inverse-result" id="inverseResult">—</div>
+                <div class="inverse-detail" id="inverseDetail">Selecciona una fecha objetivo</div>
+                <button class="btn-apply d-none" id="btnApplyExtra" onclick="applyInverseExtra()">
+                    Aplicar este abono →
+                </button>
             </div>
         </div>
     </div>
@@ -665,6 +746,8 @@ function saveConfig() {
     localStorage.setItem('lf_rate',     rate || '');
     localStorage.setItem('lf_nextDate', document.getElementById('nextPaymentDate').value || '');
     localStorage.setItem('lf_orig',     $v('originalAmt') || '');
+    localStorage.setItem('lf_paid',     document.getElementById('paidCount').value || '');
+    localStorage.setItem('lf_term',     document.getElementById('termCount').value || '');
 }
 function loadConfig() {
     let pmt  = localStorage.getItem('lf_payment');
@@ -679,6 +762,10 @@ function loadConfig() {
     if (bal)  $set('balance', bal);
     if (ext)  $set('extra', ext);
     if (orig) { $set('originalAmt', orig); REF.originalAmt = parseFloat(String(orig).replace(/\./g,'')); }
+    let paid = localStorage.getItem('lf_paid');
+    let term = localStorage.getItem('lf_term');
+    if (paid) document.getElementById('paidCount').value = paid;
+    if (term) document.getElementById('termCount').value = term;
 }
 
 let chartInst = null, tickerIv = null, pageOpen = Date.now();
@@ -704,8 +791,8 @@ function autoFill() {
     let ann   = parseFloat(document.getElementById('annualRate').value)  || 0;
     let r     = ann / 12 / 100;
 
-    s('badgePaid', 'Cuotas: '+REF.paid+' de '+REF.totalTerm+' pagadas');
-    s('daysStat', Math.floor((today - FIRST_PMT)/86400000).toLocaleString('es-CO')+'d');
+    s('badgePaid', 'Cuotas: '+getPaid()+' de '+getTerm()+' pagadas');
+    s('daysStat', Math.floor((today - getFirstPmt())/86400000).toLocaleString('es-CO')+'d');
 
     if (bal > 0 && ann > 0) {
         let dailyInt = bal * r / 30;
@@ -715,7 +802,9 @@ function autoFill() {
     } else {
         startTicker(0);
     }
-    renderMilestones(REF.paid);
+    renderMilestones(getPaid());
+    updateSlider();
+    renderHistory();
     quickCalc();
 }
 
@@ -742,9 +831,7 @@ function quickCalc() {
     s('heroSavedM', saved+' meses menos');
     s('heroSavedI', cop(savedI)+' ahorrados');
 
-    let badgeTxt = document.getElementById('badgePaid').textContent;
-    let m = badgeTxt.match(/(\d+) de (\d+)/);
-    let paid = m ? +m[1] : REF.paid, total = m ? +m[2] : REF.totalTerm;
+    let paid = getPaid(), total = getTerm();
     let timePct = paid / total * 100;
     let circ = 2 * Math.PI * 58;
     document.getElementById('ringFg').setAttribute('stroke-dasharray',
@@ -792,17 +879,17 @@ function startTicker(dailyInt) {
 function renderMilestones(paidNow) {
     let ms = [
         { lbl: 'Inicio', cuota: 1,                             icon: '●' },
-        { lbl: '25%',    cuota: Math.round(REF.totalTerm*.25), icon: '¼' },
-        { lbl: '50%',    cuota: Math.round(REF.totalTerm*.50), icon: '½' },
-        { lbl: '75%',    cuota: Math.round(REF.totalTerm*.75), icon: '¾' },
-        { lbl: 'Libre',  cuota: REF.totalTerm,                 icon: '★' }
+        { lbl: '25%',    cuota: Math.round(getTerm()*.25), icon: '¼' },
+        { lbl: '50%',    cuota: Math.round(getTerm()*.50), icon: '½' },
+        { lbl: '75%',    cuota: Math.round(getTerm()*.75), icon: '¾' },
+        { lbl: 'Libre',  cuota: getTerm(),                 icon: '★' }
     ];
-    let pct = Math.min(100, paidNow / REF.totalTerm * 100);
+    let pct = Math.min(100, paidNow / getTerm() * 100);
     document.getElementById('msFill').style.width = pct + '%';
     s('msCaption', Math.round(pct)+'% del camino');
     let row = document.getElementById('msRow'); row.innerHTML = '';
     ms.forEach(m => {
-        let date = addMonthsD(FIRST_PMT, m.cuota - 1);
+        let date = addMonthsD(getFirstPmt(), m.cuota - 1);
         let cls  = paidNow >= m.cuota ? 'done' : (paidNow >= m.cuota - 3 ? 'active' : 'upcoming');
         let div  = document.createElement('div');
         div.className = 'ms-item';
@@ -857,6 +944,7 @@ function calculate() {
     renderScenarios(bal, pmt, rate, nd, norm, extra);
     renderAmort(withE.rows, nd, pmt);
     res.scrollIntoView({ behavior: 'smooth' });
+    saveHistEntry();
 }
 
 function saveExtra() { localStorage.setItem('lf_extra', $v('extra') || 0); }
@@ -1292,6 +1380,136 @@ async function exportPDF() {
         btn.disabled = false;
         btn.innerHTML = '<span class="fab-icon">↑</span> Compartir PDF';
     }
+}
+
+/* ── Helpers de cuotas / plazo ── */
+function getPaid() { return parseInt(document.getElementById('paidCount').value) || REF.paid; }
+function getTerm() { return parseInt(document.getElementById('termCount').value) || REF.totalTerm; }
+function getFirstPmt() {
+    let nd = document.getElementById('nextPaymentDate').value;
+    return nd ? addMonths(nd, -(getPaid())) : addMonthsD(REF.date, -(REF.paid - 1));
+}
+function updateBadgeAndRing() {
+    let p = getPaid(), t = getTerm();
+    s('badgePaid', 'Cuotas: ' + p + ' de ' + t + ' pagadas');
+    renderMilestones(p);
+    quickCalc();
+}
+
+/* ── Slider ── */
+function syncSlider(slider) {
+    let val = parseInt(slider.value);
+    $set('extra', val);
+    s('sliderLbl', cop(val));
+    saveExtra(); quickCalc();
+}
+function updateSlider() {
+    let val = $v('extra');
+    let sl  = document.getElementById('extraSlider');
+    sl.value = Math.min(val, parseInt(sl.max));
+    s('sliderLbl', val > 0 ? cop(val) : '$ 0');
+}
+
+/* ── Historial de saldos ── */
+const HIST_KEY = 'lf_history';
+function saveHistEntry() {
+    let bal = $v('balance');
+    if (!bal) return;
+    let hist  = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+    let today = new Date().toISOString().slice(0, 10);
+    if (hist.length && hist[hist.length - 1].date === today)
+        hist[hist.length - 1].balance = bal;
+    else
+        hist.push({ date: today, balance: bal });
+    if (hist.length > 24) hist = hist.slice(-24);
+    localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+    let countEl = document.getElementById('histCount');
+    if (countEl) countEl.textContent = hist.length + ' registros';
+}
+function renderHistory() {
+    let hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+    let body = document.getElementById('histBody');
+    if (!body) return;
+    let countEl = document.getElementById('histCount');
+    if (countEl) countEl.textContent = hist.length ? hist.length + ' registros' : '';
+    if (!hist.length) {
+        body.innerHTML = '<div class="hist-empty">Sin registros aún. Se guarda automáticamente al hacer clic en «Ver análisis».</div>';
+        return;
+    }
+    let orig = $v('originalAmt') || REF.originalAmt || hist[0].balance;
+    body.innerHTML = '';
+    [...hist].reverse().slice(0, 14).forEach((entry, i, arr) => {
+        let pct  = Math.max(3, Math.min(100, entry.balance / orig * 100));
+        let prev = arr[i + 1];
+        let diff = prev ? prev.balance - entry.balance : 0;
+        let diffHtml = diff > 0 ? '<span class="c-green">−' + cop(diff) + '</span>'
+                     : diff < 0 ? '<span class="c-red">+' + cop(Math.abs(diff)) + '</span>' : '';
+        let row = document.createElement('div');
+        row.className = 'hist-row';
+        row.innerHTML =
+            '<div class="hist-date">' + entry.date.slice(0, 7) + '</div>'
+          + '<div class="hist-bar-wrap"><div class="hist-bar-fill" style="width:' + pct + '%"></div></div>'
+          + '<div class="hist-val">' + cop(entry.balance) + '</div>'
+          + '<div class="hist-diff">' + diffHtml + '</div>';
+        body.appendChild(row);
+    });
+}
+function toggleHistory() {
+    let body   = document.getElementById('histBody');
+    let toggle = document.getElementById('histToggle');
+    let isOpen = !body.classList.contains('d-none');
+    body.classList.toggle('d-none', isOpen);
+    toggle.classList.toggle('open', !isOpen);
+    if (!isOpen) renderHistory();
+}
+
+/* ── Calculadora inversa ── */
+function calcInverse() {
+    let bal  = $v('balance'), pmt = $v('installment');
+    let ann  = parseFloat(document.getElementById('annualRate').value) || 0;
+    let rate = ann / 12 / 100;
+    let nd   = document.getElementById('nextPaymentDate').value;
+    let tgt  = document.getElementById('targetDate').value;
+    let applyBtn = document.getElementById('btnApplyExtra');
+    applyBtn.classList.add('d-none');
+    if (!bal || !pmt || !ann || !nd || !tgt) {
+        s('inverseResult', '—');
+        s('inverseDetail', 'Ingresa los parámetros del crédito primero');
+        return;
+    }
+    let tgtDate   = new Date(tgt + '-01T12:00:00');
+    let ndDate    = new Date(nd + 'T12:00:00');
+    let tgtMonths = (tgtDate.getFullYear() - ndDate.getFullYear()) * 12 + (tgtDate.getMonth() - ndDate.getMonth());
+    if (tgtMonths <= 0) { s('inverseResult', '—'); s('inverseDetail', 'La fecha debe ser en el futuro'); return; }
+    let norm = simulate(bal, pmt, rate, 0);
+    if (!norm) { s('inverseResult', '—'); return; }
+    if (norm.months <= tgtMonths) {
+        s('inverseResult', '¡Sin abono extra!');
+        s('inverseDetail', 'Terminas en ' + norm.months + ' cuotas, antes de tu fecha objetivo');
+        return;
+    }
+    let lo = 0, hi = bal;
+    for (let i = 0; i < 60; i++) {
+        let mid = (lo + hi) / 2;
+        let sim = simulate(bal, pmt, rate, mid);
+        if (!sim || sim.months > tgtMonths) lo = mid; else hi = mid;
+    }
+    let extra = Math.ceil(hi / 10000) * 10000;
+    let check = simulate(bal, pmt, rate, extra);
+    if (!check) { s('inverseResult', 'No alcanzable'); return; }
+    let endDate = addMonths(nd, check.months - 1);
+    s('inverseResult', cop(extra) + ' /mes');
+    s('inverseDetail', 'Libertad en ' + fmy(endDate) + ' · ' + check.months + ' cuotas restantes');
+    applyBtn.dataset.val = extra;
+    applyBtn.classList.remove('d-none');
+}
+function applyInverseExtra() {
+    let val = parseInt(document.getElementById('btnApplyExtra').dataset.val) || 0;
+    if (!val) return;
+    $set('extra', val);
+    updateSlider();
+    saveExtra();
+    quickCalc();
 }
 
 autoFill();
