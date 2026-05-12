@@ -389,26 +389,71 @@
 
         /* ── ALCANCÍA INTELIGENTE ── */
         .saver-card { background:var(--glass); border:1px solid var(--border); border-radius:var(--r); margin-bottom:12px; overflow:hidden; }
-        .saver-header { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; cursor:pointer; user-select:none; }
+        .saver-header { display:flex; align-items:center; padding:14px 18px; cursor:pointer; user-select:none; gap:12px; }
+        .saver-hdr-left { flex:1; }
         .saver-hdr-lbl { font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3); }
-        .saver-total { font-size:1.05rem; font-weight:700; color:var(--green); }
-        .saver-body { padding:0 18px 18px; }
-        .saver-prog-bg { height:8px; background:rgba(255,255,255,.06); border-radius:4px; margin:10px 0 5px; }
+        .saver-hdr-streak { margin-top:3px; }
+        .streak-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(251,191,36,.12); border:1px solid rgba(251,191,36,.22); border-radius:100px; padding:3px 9px; font-size:.7rem; font-weight:700; color:var(--gold); }
+        .saver-hdr-right { text-align:right; }
+        .saver-total { font-size:1.1rem; font-weight:700; color:var(--green); line-height:1; }
+        .saver-total-sub { font-size:.58rem; color:var(--text3); margin-top:1px; }
+        .saver-body { padding:0 18px 20px; }
+        /* Status card */
+        .saver-status { border-radius:var(--r-sm); padding:12px 14px; margin-bottom:12px; }
+        .saver-status.ok   { background:rgba(52,211,153,.07); border:1px solid rgba(52,211,153,.2); }
+        .saver-status.warn { background:rgba(251,191,36,.07); border:1px solid rgba(251,191,36,.2); }
+        .saver-status.risk { background:rgba(251,113,133,.07); border:1px solid rgba(251,113,133,.2); }
+        .saver-status-lbl { font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:4px; }
+        .saver-status.ok   .saver-status-lbl { color:var(--green); }
+        .saver-status.warn .saver-status-lbl { color:var(--gold);  }
+        .saver-status.risk .saver-status-lbl { color:var(--red);   }
+        .saver-daily-target { font-size:1.2rem; font-weight:700; color:var(--text); letter-spacing:-.02em; }
+        .saver-status.ok   .saver-daily-target { color:var(--green); }
+        .saver-status.warn .saver-daily-target { color:var(--gold);  }
+        .saver-status.risk .saver-daily-target { color:var(--red);   }
+        .saver-catch-up { font-size:.72rem; color:var(--text2); margin-top:3px; line-height:1.4; }
+        /* Progress bar */
+        .saver-prog-bg { height:8px; background:rgba(255,255,255,.06); border-radius:4px; margin:10px 0 4px; }
         .saver-prog-fill { height:100%; background:linear-gradient(to right,var(--green),var(--accent)); border-radius:4px; transition:width .8s ease; }
-        .saver-prog-lbl { display:flex; justify-content:space-between; font-size:.65rem; color:var(--text3); margin-bottom:14px; }
-        .saver-add-row { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
-        .saver-add-row input { flex:1; min-width:100px; }
+        .saver-prog-lbl { display:flex; justify-content:space-between; font-size:.63rem; color:var(--text3); margin-bottom:14px; }
+        /* Strategy */
+        .strategy-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+        .btn-strategy { padding:5px 12px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:100px; color:var(--text3); font-family:'Space Grotesk',sans-serif; font-size:.72rem; font-weight:600; cursor:pointer; transition:all .2s; }
+        .btn-strategy.active { background:rgba(129,140,248,.12); border-color:var(--accent); color:var(--accent); }
+        /* Quick add */
+        .quick-add-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+        .btn-quick { padding:7px 12px; background:rgba(255,255,255,.04); border:1px solid var(--border2); border-radius:var(--r-sm); color:var(--text2); font-family:'Space Grotesk',sans-serif; font-size:.78rem; font-weight:600; cursor:pointer; transition:all .2s; white-space:nowrap; }
+        .btn-quick:hover { background:rgba(52,211,153,.1); border-color:rgba(52,211,153,.3); color:var(--green); }
+        .btn-quick.highlight { border-color:var(--gold); color:var(--gold); background:rgba(251,191,36,.08); }
+        /* Add row */
+        .saver-add-row { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+        .saver-add-row input { flex:1; min-width:90px; }
         .btn-saver { padding:10px 14px; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.3); border-radius:var(--r-sm); color:var(--green); font-family:'Space Grotesk',sans-serif; font-size:.82rem; font-weight:700; cursor:pointer; white-space:nowrap; transition:background .2s; }
         .btn-saver:hover { background:rgba(52,211,153,.2); }
-        .btn-saver-apply { width:100%; margin-top:6px; background:linear-gradient(135deg,rgba(129,140,248,.12),rgba(52,211,153,.08)); border:1px solid rgba(129,140,248,.25); color:var(--accent); }
-        .saver-entries { max-height:200px; overflow-y:auto; }
+        .btn-saver-apply { width:100%; margin-top:10px; background:linear-gradient(135deg,rgba(129,140,248,.12),rgba(52,211,153,.08)); border:1px solid rgba(129,140,248,.25); color:var(--accent); font-size:.88rem; }
+        /* Calendar heatmap */
+        .cal-section-lbl { font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text3); margin:14px 0 6px; }
+        .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+        .cal-hdr { text-align:center; font-size:.58rem; color:var(--text3); font-weight:700; padding:2px 0 4px; }
+        .cal-day { aspect-ratio:1; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:.65rem; color:var(--text3); background:rgba(255,255,255,.03); position:relative; transition:transform .1s; cursor:default; }
+        .cal-day.empty { background:transparent; }
+        .cal-day.today { outline:1.5px solid var(--accent); color:var(--accent); font-weight:700; }
+        .cal-day.has-savings { color:var(--text); }
+        /* Impact line */
+        .impact-line { font-size:.78rem; color:var(--text2); background:rgba(129,140,248,.06); border-radius:var(--r-sm); padding:10px 14px; border-left:3px solid var(--accent); margin:10px 0; line-height:1.5; }
+        .impact-line strong { color:var(--green); }
+        /* Goal meta */
+        .saver-goal-row { display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:.72rem; color:var(--text3); }
+        .saver-goal-row input { width:130px; }
+        /* Entries */
+        .saver-entries { max-height:180px; overflow-y:auto; margin-bottom:4px; }
         .saver-entry { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.03); font-size:.8rem; }
         .saver-entry:last-child { border:none; }
-        .saver-entry-date { color:var(--text3); font-size:.68rem; width:68px; flex-shrink:0; }
+        .saver-entry-date { color:var(--text3); font-size:.68rem; width:62px; flex-shrink:0; }
         .saver-entry-note { color:var(--text2); flex:1; }
-        .saver-entry-amt { color:var(--green); font-weight:700; }
+        .saver-entry-amt { color:var(--green); font-weight:700; white-space:nowrap; }
         .saver-entry-del { background:none; border:none; color:var(--text3); cursor:pointer; padding:2px 4px; }
-        .saver-empty { color:var(--text3); font-size:.78rem; text-align:center; padding:14px 0; }
+        .saver-empty { color:var(--text3); font-size:.78rem; text-align:center; padding:12px 0; }
 
         /* ── FAB BELL + BACKUP ── */
         .fab-bell { position:fixed; bottom:22px; left:18px; z-index:999; background:var(--bg1); border:1px solid var(--border2); border-radius:100px; padding:11px 16px; font-size:.82rem; font-weight:700; color:var(--text2); cursor:pointer; display:flex; align-items:center; gap:7px; transition:all .2s; box-shadow:0 4px 16px rgba(0,0,0,.3); }
@@ -672,34 +717,71 @@
     <!-- ALCANCÍA INTELIGENTE -->
     <div class="saver-card">
         <div class="saver-header" onclick="toggleSaver()">
-            <span class="saver-hdr-lbl">🐖 Alcancía Inteligente</span>
-            <div style="display:flex;align-items:baseline;gap:6px">
-                <span class="saver-total" id="saverTotal">$ 0</span>
-                <span style="font-size:.62rem;color:var(--text3)">acumulado</span>
-                <span class="hist-toggle" id="saverToggle" style="margin-left:8px">▾</span>
+            <div class="saver-hdr-left">
+                <div class="saver-hdr-lbl">🐖 Alcancía Inteligente</div>
+                <div class="saver-hdr-streak">
+                    <span class="streak-badge" id="streakBadge">🔥 0 días</span>
+                </div>
             </div>
+            <div class="saver-hdr-right">
+                <div class="saver-total" id="saverTotal">$ 0</div>
+                <div class="saver-total-sub">de <span id="saverGoalLabel">—</span> este mes</div>
+            </div>
+            <span class="hist-toggle" id="saverToggle" style="margin-left:8px">▾</span>
         </div>
+
         <div id="saverBody" class="saver-body d-none">
-            <div style="font-size:.78rem;color:var(--text2);margin-bottom:10px">
-                Guarda montos variables cada mes. Cuando llegues a tu meta, aplica el abono al crédito.
+
+            <!-- STATUS / META DIARIA -->
+            <div class="saver-status ok" id="saverStatusCard">
+                <div class="saver-status-lbl" id="saverStatusLbl">Cargando…</div>
+                <div class="saver-daily-target" id="saverDailyTarget"></div>
+                <div class="saver-catch-up" id="saverCatchUp"></div>
             </div>
+
+            <!-- BARRA DE PROGRESO -->
             <div class="saver-prog-bg"><div class="saver-prog-fill" id="saverProgFill" style="width:0%"></div></div>
             <div class="saver-prog-lbl">
-                <span id="saverProgPct">0%</span>
+                <span id="saverProgPct">0% del mes</span>
                 <span>Meta: <span id="saverGoalLbl">—</span></span>
             </div>
+
+            <!-- META + ESTRATEGIA -->
+            <div class="saver-goal-row">
+                <span>Meta mensual ($):</span>
+                <input type="text" inputmode="numeric" id="saverGoal" class="form-control"
+                       placeholder="342.430" oninput="fmtInput(this);renderSaver()" style="font-size:.85rem">
+            </div>
+            <div class="strategy-row" id="strategyRow">
+                <!-- generado por JS -->
+            </div>
+
+            <!-- GUARDADO RÁPIDO -->
+            <div class="cal-section-lbl">Guardar ahora</div>
+            <div class="quick-add-row" id="quickAddRow">
+                <!-- generado por JS -->
+            </div>
             <div class="saver-add-row">
-                <input type="text" inputmode="numeric" id="saverAmt" class="form-control" placeholder="$ monto" oninput="fmtInput(this)">
-                <input type="text" id="saverNote" class="form-control" placeholder="Nota (opcional)" style="font-size:.82rem">
+                <input type="text" inputmode="numeric" id="saverAmt" class="form-control"
+                       placeholder="$ otro monto" oninput="fmtInput(this)">
+                <input type="text" id="saverNote" class="form-control"
+                       placeholder="Nota (quincena, café…)" style="max-width:140px;font-size:.82rem">
                 <button class="btn-saver" onclick="addSaving()">+ Guardar</button>
             </div>
-            <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;font-size:.72rem;color:var(--text3)">
-                Meta mensual:
-                <input type="text" inputmode="numeric" id="saverGoal" class="form-control" style="width:130px;font-size:.82rem" placeholder="$ objetivo" oninput="fmtInput(this);renderSaver()">
-            </div>
+
+            <!-- IMPACTO EN EL CRÉDITO -->
+            <div class="impact-line d-none" id="impactLine"></div>
+
+            <!-- CALENDARIO HEATMAP -->
+            <div class="cal-section-lbl">Registro del mes</div>
+            <div id="saverCalendar"></div>
+
+            <!-- HISTORIAL DE ENTRADAS -->
             <div class="saver-entries" id="saverEntries"></div>
+
+            <!-- BOTÓN ABONAR -->
             <button class="btn-saver btn-saver-apply" onclick="applySaving()">
-                ¡Alcancía llena! Abonar al crédito →
+                🎯 Abonar <span id="saverApplyAmt">—</span> al crédito →
             </button>
         </div>
     </div>
@@ -1774,88 +1856,254 @@ function checkOnOpenNotifications() {
 }
 
 /* ════════════════════════════════════════════════
-   ALCANCÍA INTELIGENTE
+   ALCANCÍA INTELIGENTE — Sistema de hábito
    ════════════════════════════════════════════════ */
 const SAVER_KEY = 'lf_saver';
-function getSaverData() { return JSON.parse(localStorage.getItem(SAVER_KEY) || '{"entries":[],"goal":0}'); }
+const STRATEGIES = [
+    { id:'daily',     label:'Diario',     desc:'Una pequeña cantidad cada día' },
+    { id:'weekly',    label:'Semanal',    desc:'Una vez por semana' },
+    { id:'biweekly',  label:'Quincenal',  desc:'Días 1 y 15 del mes' },
+    { id:'free',      label:'Libre',      desc:'Sin meta diaria' },
+];
+
+function getSaverData() {
+    let d = JSON.parse(localStorage.getItem(SAVER_KEY) || '{}');
+    return { entries: d.entries||[], goal: d.goal||0, strategy: d.strategy||'daily', streak: d.streak||{current:0,max:0,lastDate:null} };
+}
 function saveSaverData(d) { localStorage.setItem(SAVER_KEY, JSON.stringify(d)); }
 
-function addSaving() {
-    let amt  = $v('saverAmt');
+/* ── Helpers de fecha/mes ── */
+function todayStr()  { return new Date().toISOString().slice(0,10); }
+function thisMonthStr() { return new Date().toISOString().slice(0,7); }
+function daysInMonth() { let n=new Date(); return new Date(n.getFullYear(), n.getMonth()+1, 0).getDate(); }
+function dayOfMonth()  { return new Date().getDate(); }
+function firstDayOfMonth() { let n=new Date(); return new Date(n.getFullYear(), n.getMonth(), 1).getDay(); }
+function monthEntries() { let d=getSaverData(); return d.entries.filter(e=>e.date.startsWith(thisMonthStr())); }
+function monthTotal() { return monthEntries().reduce((s,e)=>s+e.amount, 0); }
+function getGoal() { return parseFloat((document.getElementById('saverGoal')||{}).value||''.replace(/\./g,'')) || getSaverData().goal || $v('extra') || 0; }
+
+/* ── Racha ── */
+function updateStreak() {
+    let d    = getSaverData();
+    let today = todayStr();
+    let yest  = new Date(Date.now()-86400000).toISOString().slice(0,10);
+    if (!d.streak) d.streak = {current:0,max:0,lastDate:null};
+    let hasTodayEntry = d.entries.some(e=>e.date===today);
+    if (hasTodayEntry && d.streak.lastDate !== today) {
+        d.streak.current = (d.streak.lastDate === yest) ? d.streak.current + 1 : 1;
+        d.streak.lastDate = today;
+        d.streak.max = Math.max(d.streak.max, d.streak.current);
+        saveSaverData(d);
+    }
+    return d.streak;
+}
+
+/* ── Meta diaria según estrategia ── */
+function getDailyTarget(goal, strategy) {
+    if (!goal || strategy === 'free') return null;
+    let today = dayOfMonth(), total = daysInMonth(), left = total - today + 1;
+    let saved = monthTotal(), remaining = Math.max(0, goal - saved);
+    if (remaining === 0) return 0;
+    switch(strategy) {
+        case 'daily':    return Math.ceil(remaining / left);
+        case 'weekly':   return Math.ceil(remaining / Math.max(1, Math.ceil(left/7)));
+        case 'biweekly': {
+            let nexts = [];
+            if (today <= 1)  nexts.push(1);
+            if (today <= 15) nexts.push(15);
+            return nexts.length ? Math.ceil(remaining / nexts.length) : remaining;
+        }
+        default: return null;
+    }
+}
+
+/* ── Estado del mes ── */
+function getSaverStatus(goal, strategy) {
+    if (!goal || strategy==='free') return { cls:'ok', lbl:'Modo libre', target:null, catchUp:'' };
+    let today = dayOfMonth(), total = daysInMonth(), saved = monthTotal();
+    let expectedByNow = goal * (today / total);
+    let pct  = saved / expectedByNow;
+    let dailyT = getDailyTarget(goal, strategy);
+    let catchUp = '';
+    if (saved >= goal) return { cls:'ok', lbl:'✓ ¡Meta alcanzada este mes!', target:'¡Listo para abonar!', catchUp:'' };
+    if (pct >= 0.85) {
+        return { cls:'ok', lbl:'En ritmo ✓', target: dailyT ? 'Hoy: ' + cop(dailyT) : 'Vas bien', catchUp:'' };
+    } else if (pct >= 0.5) {
+        catchUp = `Llevas ${cop(saved)} · Faltan ${cop(Math.max(0,goal-saved))} en ${total-today} días`;
+        return { cls:'warn', lbl:'Levemente atrasado', target: dailyT ? 'Recuperar: ' + cop(dailyT) + '/día' : '', catchUp };
+    } else {
+        let dLeft = total - today + 1;
+        let catchUpAmt = dLeft > 0 ? Math.ceil((goal-saved)/dLeft) : (goal-saved);
+        catchUp = `Solo llevas ${cop(saved)} de ${cop(goal)}. Para recuperar necesitas ${cop(catchUpAmt)}/día los próximos ${dLeft} días.`;
+        return { cls:'risk', lbl:'⚠ Atrasado — ¡ponle turbo!', target: cop(catchUpAmt)+'/día para recuperar', catchUp };
+    }
+}
+
+/* ── Añadir ahorro ── */
+function addSaving(presetAmt) {
+    let amt  = presetAmt || $v('saverAmt');
     let note = document.getElementById('saverNote').value.trim();
-    if (!amt) { showToast('⚠','Ingresa un monto','Escribe cuánto estás guardando en la alcancía.'); return; }
+    if (!amt) { showToast('⚠','Ingresa un monto','Escribe cuánto estás guardando.'); return; }
     let d = getSaverData();
-    d.entries.push({ date: new Date().toISOString().slice(0,10), amount: amt, note: note || 'Ahorro' });
+    d.entries.push({ date:todayStr(), amount:amt, note:note||'Ahorro' });
+    let goal = getGoal();
+    if (goal) d.goal = goal;
     saveSaverData(d);
     document.getElementById('saverAmt').value = '';
     document.getElementById('saverNote').value = '';
+    let streak = updateStreak();
     renderSaver();
-    let total = d.entries.reduce((s,e)=>s+e.amount, 0);
-    let goal  = parseFloat(document.getElementById('saverGoal').value.replace(/\./g,'')) || $v('extra');
-    if (goal > 0 && total >= goal) {
-        let p = getNotifPrefs();
-        if (p.saver) {
-            showToast('🐖','¡Alcancía llena!', `Tienes ${cop(total)} ahorrados. ¡Listo para abonar!`,'var(--green)');
-            showBrowserNotif('🐖 ¡Alcancía llena!', `Tienes ${cop(total)} ahorrados para abonar al crédito.`);
-        }
+    let total = monthTotal();
+    if (streak.current >= 3) showToast('🔥','¡Racha de '+streak.current+' días!','Estás construyendo el hábito de ahorrar.','var(--gold)');
+    else if (goal > 0 && total >= goal) {
+        showToast('🐖','¡Meta del mes alcanzada!',`Tienes ${cop(total)} listos para abonar al crédito.`,'var(--green)');
+        showBrowserNotif('🐖 ¡Meta alcanzada!',`${cop(total)} listos para abonar al crédito.`);
     } else {
-        showToast('💰','Guardado', `+${cop(amt)} en tu alcancía. Total: ${cop(total)}`, 'var(--green)');
+        let remaining = goal > 0 ? goal - total : 0;
+        let msg = remaining > 0 ? `Total: ${cop(total)} · Faltan ${cop(remaining)}` : `+${cop(amt)} guardados`;
+        showToast('💰','Guardado',msg,'var(--green)');
     }
 }
-function deleteSaving(idx) {
-    let d = getSaverData();
-    d.entries.splice(idx, 1);
-    saveSaverData(d);
-    renderSaver();
-}
+function deleteSaving(idx) { let d=getSaverData(); d.entries.splice(idx,1); saveSaverData(d); renderSaver(); }
+function setStrategy(id) { let d=getSaverData(); d.strategy=id; saveSaverData(d); renderSaver(); }
+
+/* ── Aplicar a crédito ── */
 function applySaving() {
-    let d = getSaverData();
-    let total = d.entries.reduce((s,e)=>s+e.amount, 0);
+    let total = monthTotal();
     if (!total) { showToast('⚠','Alcancía vacía','Primero guarda algunos ahorros.'); return; }
-    $set('extra', total);
-    updateSlider(); saveExtra(); quickCalc();
-    showToast('🎯','¡Abono aplicado!', `${cop(total)} configurado como abono extra. Haz clic en «Ver análisis» para ver el impacto.`, 'var(--accent)');
-    // Reset alcancía
-    d.entries = [];
+    $set('extra', total); updateSlider(); saveExtra(); quickCalc();
+    showToast('🎯','¡Abono configurado!',`${cop(total)} como abono extra. Pulsa «Ver análisis» para ver el impacto.`,'var(--accent)');
+    let d = getSaverData();
+    d.entries = d.entries.filter(e=>!e.date.startsWith(thisMonthStr()));
     saveSaverData(d);
     renderSaver();
 }
+
+/* ── Calendario heatmap ── */
+function renderCalendar(entries, goal) {
+    let container = document.getElementById('saverCalendar');
+    if (!container) return;
+    let today = dayOfMonth(), totalDays = daysInMonth();
+    let dailyGoal = (goal && getSaverData().strategy!=='free') ? goal/totalDays : 0;
+    // Mapa día → total ahorrado
+    let dayMap = {};
+    entries.filter(e=>e.date.startsWith(thisMonthStr())).forEach(e=>{
+        let d = parseInt(e.date.slice(-2));
+        dayMap[d] = (dayMap[d]||0) + e.amount;
+    });
+    let html = '<div class="cal-grid">';
+    ['D','L','M','M','J','V','S'].forEach(d=>{ html+=`<div class="cal-hdr">${d}</div>`; });
+    for (let i=0;i<firstDayOfMonth();i++) html+='<div class="cal-day empty"></div>';
+    for (let d=1;d<=totalDays;d++) {
+        let amt     = dayMap[d]||0;
+        let isToday = d===today;
+        let cls     = 'cal-day' + (isToday?' today':'') + (amt>0?' has-savings':'');
+        let pct     = dailyGoal>0 ? Math.min(1, amt/dailyGoal) : (amt>0?1:0);
+        let bg      = amt>0 ? `rgba(52,211,153,${0.1+pct*0.55})` : '';
+        let title   = amt>0 ? `${d}: ${cop(amt)}` : String(d);
+        html += `<div class="${cls}" style="${bg?'background:'+bg+';':''}" title="${title}">${d}</div>`;
+    }
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+/* ── Render principal ── */
 function renderSaver() {
-    let d      = getSaverData();
-    let total  = d.entries.reduce((s,e)=>s+e.amount, 0);
-    let goalEl = document.getElementById('saverGoal');
-    let goal   = goalEl ? (parseFloat(goalEl.value.replace(/\./g,'')) || $v('extra') || 0) : 0;
-    if (goal > 0 && !goalEl.value) $set('saverGoal', goal);
+    let d       = getSaverData();
+    let goal    = getGoal();
+    if (!goal) { let g=$v('extra'); if(g){goal=g; $set('saverGoal',g);} }
+    if (goal && document.getElementById('saverGoal') && !document.getElementById('saverGoal').value) $set('saverGoal',goal);
+    d.goal = goal||d.goal;
 
-    s('saverTotal', cop(total));
-    let pct = goal > 0 ? Math.min(100, total / goal * 100) : 0;
-    let fill = document.getElementById('saverProgFill');
-    if (fill) fill.style.width = pct + '%';
-    s('saverProgPct', Math.round(pct) + '%');
-    s('saverGoalLbl', goal > 0 ? cop(goal) : '—');
+    let total = monthTotal();
+    let pct   = goal>0 ? Math.min(100,total/goal*100) : 0;
 
+    // Header
+    s('saverTotal',      cop(total));
+    s('saverGoalLabel',  goal>0?cop(goal):'—');
+    s('saverGoalLbl',    goal>0?cop(goal):'—');
+    s('saverApplyAmt',   cop(total));
+
+    // Barra progreso
+    let fill=document.getElementById('saverProgFill');
+    if (fill) fill.style.width=pct+'%';
+    s('saverProgPct', Math.round(pct)+'% del mes');
+
+    // Racha
+    updateStreak();
+    let st = getSaverData().streak;
+    s('streakBadge','🔥 '+st.current+' día'+(st.current!==1?'s':'')+
+      (st.max>st.current?' · Récord: '+st.max:''));
+
+    // Status
+    let status = getSaverStatus(goal, d.strategy);
+    let card   = document.getElementById('saverStatusCard');
+    if (card) { card.className='saver-status '+status.cls; }
+    s('saverStatusLbl',    status.lbl);
+    s('saverDailyTarget',  status.target||'');
+    s('saverCatchUp',      status.catchUp||'');
+
+    // Impacto en el crédito
+    let bal  = $v('balance'), ann = parseFloat((document.getElementById('annualRate')||{}).value||0)||0;
+    let impactEl = document.getElementById('impactLine');
+    if (impactEl) {
+        if (total>0 && bal>0 && ann>0) {
+            let dailyInterest = bal*(ann/12/100)/30;
+            let daysSaved     = Math.round(total/dailyInterest);
+            impactEl.innerHTML = `Los <strong>${cop(total)}</strong> ahorrados este mes equivalen a eliminar aprox. <strong>${daysSaved} día${daysSaved!==1?'s':''} de intereses</strong> de tu crédito.`;
+            impactEl.classList.remove('d-none');
+        } else {
+            impactEl.classList.add('d-none');
+        }
+    }
+
+    // Estrategias
+    let sRow = document.getElementById('strategyRow');
+    if (sRow) {
+        sRow.innerHTML = STRATEGIES.map(st=>
+            `<button class="btn-strategy${d.strategy===st.id?' active':''}" onclick="setStrategy('${st.id}')" title="${st.desc}">${st.label}</button>`
+        ).join('');
+    }
+
+    // Botones rápidos
+    let qRow = document.getElementById('quickAddRow');
+    if (qRow) {
+        let dailyT = getDailyTarget(goal, d.strategy);
+        let presets = [5000, 10000, 20000, 50000];
+        if (dailyT && dailyT>0 && !presets.includes(Math.round(dailyT/1000)*1000))
+            presets.push(Math.round(dailyT/1000)*1000);
+        presets.sort((a,b)=>a-b).slice(0,5).forEach(amt=>{
+            let isTarget = dailyT && Math.abs(amt-Math.round(dailyT/1000)*1000)<1000;
+            qRow.innerHTML += `<button class="btn-quick${isTarget?' highlight':''}" onclick="addSaving(${amt})">${isTarget?'⭐ ':''}\$${(amt/1000).toFixed(0)}K</button>`;
+        });
+        qRow.innerHTML += `<button class="btn-quick" onclick="document.getElementById('saverAmt').focus()">Otro…</button>`;
+    }
+
+    // Calendario
+    renderCalendar(d.entries, goal);
+
+    // Historial del mes
     let container = document.getElementById('saverEntries');
     if (!container) return;
-    if (!d.entries.length) {
-        container.innerHTML = '<div class="saver-empty">Sin ahorros registrados aún. Agrega montos a medida que ahorras.</div>';
-        return;
+    let monthE = monthEntries().reverse();
+    if (!monthE.length) {
+        container.innerHTML='<div class="saver-empty">Sin ahorros este mes. ¡Comienza hoy!</div>';
+    } else {
+        container.innerHTML='';
+        monthE.forEach((e,i)=>{
+            let realIdx = getSaverData().entries.findIndex(x=>x.date===e.date&&x.amount===e.amount&&x.note===e.note);
+            let row=document.createElement('div'); row.className='saver-entry';
+            row.innerHTML=`<span class="saver-entry-date">${e.date.slice(5)}</span><span class="saver-entry-note">${e.note}</span><span class="saver-entry-amt">${cop(e.amount)}</span><button class="saver-entry-del" onclick="deleteSaving(${realIdx})">✕</button>`;
+            container.appendChild(row);
+        });
     }
-    container.innerHTML = '';
-    [...d.entries].reverse().forEach((e, i) => {
-        let realIdx = d.entries.length - 1 - i;
-        let row = document.createElement('div');
-        row.className = 'saver-entry';
-        row.innerHTML = `<span class="saver-entry-date">${e.date.slice(5)}</span><span class="saver-entry-note">${e.note}</span><span class="saver-entry-amt">${cop(e.amount)}</span><button class="saver-entry-del" onclick="deleteSaving(${realIdx})">✕</button>`;
-        container.appendChild(row);
-    });
 }
+
 function toggleSaver() {
-    let body   = document.getElementById('saverBody');
-    let toggle = document.getElementById('saverToggle');
-    let isOpen = !body.classList.contains('d-none');
-    body.classList.toggle('d-none', isOpen);
-    toggle.classList.toggle('open', !isOpen);
-    if (!isOpen) renderSaver();
+    let body=document.getElementById('saverBody'), toggle=document.getElementById('saverToggle');
+    let open=!body.classList.contains('d-none');
+    body.classList.toggle('d-none',open); toggle.classList.toggle('open',!open);
+    if (!open) renderSaver();
 }
 
 /* ════════════════════════════════════════════════
