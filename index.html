@@ -417,10 +417,11 @@
                 <div class="metric-sub" id="heroSavedI"></div>
             </div>
             <div class="metric-card m-capital">
-                <div class="metric-lbl">Capital saldado</div>
+                <div class="metric-lbl">Capital amortizado</div>
                 <div class="metric-val" id="heroCapPct">—</div>
                 <div class="cap-bar-bg"><div class="cap-bar-fill" id="heroCapBar" style="width:0%"></div></div>
                 <div class="metric-sub" id="heroCapAmt" style="margin-top:4px"></div>
+                <div style="font-size:.52rem;color:var(--text3);margin-top:5px;line-height:1.3">(monto original − saldo) / monto original · el banco puede mostrar un % distinto usando otra base de cálculo</div>
             </div>
         </div>
     </div>
@@ -475,11 +476,13 @@
                 <label class="form-label">Cuota mensual ($)</label>
                 <input type="number" id="installment" class="form-control" placeholder="0"
                        oninput="saveConfig()">
+                <span class="form-hint">Valor total descontado de nómina (incluye seguros)</span>
             </div>
             <div class="form-group">
                 <label class="form-label">Monto original ($)</label>
                 <input type="number" id="originalAmt" class="form-control" placeholder="0"
                        oninput="saveConfig()">
+                <span class="form-hint">Valor del crédito en la fecha de apertura</span>
             </div>
             <div class="form-group">
                 <label class="form-label">Tasa nominal anual (%)</label>
@@ -1123,6 +1126,129 @@ async function exportPDF() {
         doc.text('Libertad Financiera PWA  ·  Solo uso personal', M, H - 4);
         doc.setTextColor(...ACC);
         doc.text('landing7181.github.io/libertad-financiera', W - M, H - 4, { align: 'right' });
+
+        if (bal && pmt && ann && nd) {
+            const norm2  = simulate(bal, pmt, rate, 0);
+            const withE2 = simulate(bal, pmt, rate, extra);
+            if (norm2 && withE2) {
+                const saved2  = norm2.months - withE2.months;
+                const pct2    = norm2.months > 0 ? Math.round(saved2 / norm2.months * 100) : 0;
+
+                // ── PÁGINA 2: TABLAS DETALLADAS ───────────
+                doc.addPage();
+                doc.setFillColor(...BG); doc.rect(0, 0, W, H, 'F');
+                doc.setFillColor(...ACC); doc.rect(0, 0, W, 2, 'F');
+                doc.setFillColor(...CARD); doc.rect(0, 2, W, 16, 'F');
+                doc.setFont('helvetica','bold'); doc.setTextColor(...TXT); doc.setFontSize(11);
+                doc.text('LIBERTAD FINANCIERA  ·  Tablas de análisis', M, 13);
+                y = 28;
+
+                // ── REDUCCIÓN DEL PLAZO ───────────────────
+                section('REDUCCIÓN DEL PLAZO CON ABONO EXTRA', ACC);
+                card(y - 2, 14, CARD);
+                doc.setFillColor(...BDR);
+                doc.roundedRect(M + 4, y + 3, C - 8, 5, 1, 1, 'F');
+                doc.setFillColor(...GRN);
+                doc.roundedRect(M + 4, y + 3, (C - 8) * pct2 / 100, 5, 1, 1, 'F');
+                doc.setFont('helvetica','bold'); doc.setTextColor(...GRN); doc.setFontSize(8);
+                doc.text(pct2 + '% del plazo reducido  ·  ' + saved2 + ' cuotas ahorradas de ' + norm2.months, M + 4, y + 11);
+                y += 22;
+
+                // ── TABLA: ¿CUÁNTO ABONO PARA CUÁNTO AHORRO? ──
+                section('¿CUÁNTO ABONO PARA CUÁNTO AHORRO?', ACC);
+                card(y - 2, 10, CARD2);
+                // Encabezados
+                const tcols = [M+4, M+46, M+76, M+106, M+140];
+                const theads = ['Abono extra / mes','Cuotas','Ahorrado','Int. ahorrados','Último pago'];
+                theads.forEach((h, i) => {
+                    doc.setFont('helvetica','bold'); doc.setTextColor(...MUT); doc.setFontSize(7);
+                    doc.text(h, tcols[i], y + 5);
+                });
+                y += 12;
+
+                let presets2 = [...PRESETS];
+                if (!presets2.includes(extra) && extra > 0) presets2 = [...presets2, extra].sort((a,b)=>a-b);
+
+                presets2.forEach(amt => {
+                    if (amt >= bal) return;
+                    const sim2 = simulate(bal, pmt, rate, amt); if (!sim2) return;
+                    const sv2   = norm2.months - sim2.months;
+                    const si2   = norm2.totalInterest - sim2.totalInterest;
+                    const end2  = addMonths(nd, sim2.months - 1);
+                    const isAct = Math.abs(amt - extra) < 1;
+
+                    if (isAct) { doc.setFillColor(30,30,70); } else { doc.setFillColor(13,13,36); }
+                    doc.rect(M, y - 3, C, 7, 'F');
+
+                    const rowColor = isAct ? ACC : TXT;
+                    doc.setFont('helvetica', isAct ? 'bold' : 'normal');
+                    doc.setTextColor(...rowColor); doc.setFontSize(8);
+                    doc.text(amt === 0 ? 'Sin abono' : cop(amt)+'/mes', tcols[0], y + 1.5);
+                    doc.text(String(sim2.months), tcols[1], y + 1.5);
+                    doc.setTextColor(...(sv2 > 0 ? GRN : MUT));
+                    doc.text(sv2 > 0 ? '−'+sv2+' m' : '—', tcols[2], y + 1.5);
+                    doc.setTextColor(...(si2 > 1 ? GRN : MUT));
+                    doc.text(si2 > 1 ? cop(si2) : '—', tcols[3], y + 1.5);
+                    doc.setTextColor(...TXT);
+                    doc.text(fd(end2), tcols[4], y + 1.5);
+
+                    if (isAct) {
+                        doc.setFillColor(...ACC);
+                        doc.rect(M, y - 3, 1.5, 7, 'F');
+                    }
+                    y += 8;
+                });
+                y += 6;
+
+                // ── TABLA: AMORTIZACIÓN MENSUAL ─────────────
+                section('AMORTIZACIÓN MENSUAL CON ABONO EXTRA (primeros 24 meses)', GLD);
+                card(y - 2, 10, CARD2);
+                const acols = [M+4, M+28, M+60, M+88, M+112, M+136, M+160];
+                const aheads = ['#','Fecha','Cuota','Interés','Capital','Abono +','Saldo'];
+                aheads.forEach((h, i) => {
+                    doc.setFont('helvetica','bold'); doc.setTextColor(...MUT); doc.setFontSize(6.5);
+                    doc.text(h, acols[i], y + 5);
+                });
+                y += 12;
+
+                const maxRows = Math.min(withE2.rows.length, 24);
+                withE2.rows.slice(0, maxRows).forEach((r, idx) => {
+                    const d2 = addMonths(nd, r.month - 1);
+                    const even = idx % 2 === 0;
+                    doc.setFillColor(...(even ? [13,13,36] : [17,17,42]));
+                    doc.rect(M, y - 3, C, 6.5, 'F');
+
+                    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+                    doc.setTextColor(...TXT);
+                    doc.text(String(r.month), acols[0], y + 1);
+                    doc.text(fd(d2), acols[1], y + 1);
+                    doc.text(cop(pmt), acols[2], y + 1);
+                    doc.setTextColor(...RED);
+                    doc.text(cop(r.interest), acols[3], y + 1);
+                    doc.setTextColor(...TXT);
+                    doc.text(cop(r.principal), acols[4], y + 1);
+                    doc.setTextColor(r.extra > 0 ? GLD[0] : MUT[0], r.extra > 0 ? GLD[1] : MUT[1], r.extra > 0 ? GLD[2] : MUT[2]);
+                    doc.text(r.extra > 0 ? cop(r.extra) : '—', acols[5], y + 1);
+                    doc.setTextColor(...GRN);
+                    doc.text(cop(r.balance), acols[6], y + 1);
+                    y += 7;
+                });
+
+                if (withE2.rows.length > 24) {
+                    doc.setFont('helvetica','italic'); doc.setTextColor(...MUT); doc.setFontSize(7.5);
+                    doc.text('… ' + (withE2.rows.length - 24) + ' meses adicionales disponibles en la app', M + 4, y + 4);
+                    y += 10;
+                }
+            }
+        }
+
+        // ── FOOTER PÁG 2 ──────────────────────────────
+        doc.setFillColor(...CARD); doc.rect(0, H - 10, W, 10, 'F');
+        doc.setFillColor(...ACC);  doc.rect(0, H - 10, W, 0.6, 'F');
+        doc.setTextColor(...MUT); doc.setFontSize(6.5); doc.setFont('helvetica','normal');
+        doc.text('Libertad Financiera PWA  ·  Solo uso personal', M, H - 3);
+        doc.setTextColor(...ACC);
+        doc.text('landing7181.github.io/libertad-financiera', W - M, H - 3, { align: 'right' });
 
         // ── EXPORTAR ──────────────────────────────────
         const fileName = 'libertad-' + now.toISOString().slice(0,10) + '.pdf';
