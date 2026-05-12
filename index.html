@@ -455,6 +455,18 @@
         .saver-entry-del { background:none; border:none; color:var(--text3); cursor:pointer; padding:2px 4px; }
         .saver-empty { color:var(--text3); font-size:.78rem; text-align:center; padding:12px 0; }
 
+        /* ── BACKUP BUTTONS ── */
+        .backup-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+        .btn-backup {
+            display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+            padding:12px 8px; background:rgba(255,255,255,.04); border:1px solid var(--border2);
+            border-radius:var(--r-sm); color:var(--text2); font-family:'Space Grotesk',sans-serif;
+            cursor:pointer; transition:all .2s; text-align:center;
+        }
+        .btn-backup:hover { border-color:var(--accent); color:var(--accent); }
+        .btn-backup-icon { font-size:1.3rem; }
+        .btn-backup-lbl  { font-size:.7rem; font-weight:600; }
+
         /* ── FAB BELL + BACKUP ── */
         .fab-bell { position:fixed; bottom:22px; left:18px; z-index:999; background:var(--bg1); border:1px solid var(--border2); border-radius:100px; padding:11px 16px; font-size:.82rem; font-weight:700; color:var(--text2); cursor:pointer; display:flex; align-items:center; gap:7px; transition:all .2s; box-shadow:0 4px 16px rgba(0,0,0,.3); }
         .fab-bell:hover { border-color:var(--accent); color:var(--accent); }
@@ -704,12 +716,21 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group full" style="display:flex;gap:8px">
-                <button onclick="calculate()" class="btn-analyze" style="flex:1">Ver análisis completo</button>
-                <button onclick="exportData()" title="Exportar datos" style="padding:13px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);font-family:'Space Grotesk',sans-serif;font-size:1rem;cursor:pointer" title="Exportar copia de seguridad">💾</button>
-                <label style="padding:13px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);cursor:pointer;font-size:1rem" title="Restaurar copia de seguridad">
-                    📂<input type="file" accept=".json" onchange="importData(this)" style="display:none">
-                </label>
+            <div class="form-group full">
+                <button onclick="calculate()" class="btn-analyze">Ver análisis completo</button>
+            </div>
+            <div class="form-group full">
+                <div class="backup-row">
+                    <button onclick="exportData()" class="btn-backup">
+                        <span class="btn-backup-icon">💾</span>
+                        <span class="btn-backup-lbl">Exportar backup</span>
+                    </button>
+                    <label class="btn-backup">
+                        <span class="btn-backup-icon">📂</span>
+                        <span class="btn-backup-lbl">Restaurar backup</span>
+                        <input type="file" accept=".json" onchange="importData(this)" style="display:none">
+                    </label>
+                </div>
             </div>
         </div>
     </div>
@@ -1873,14 +1894,25 @@ function getSaverData() {
 function saveSaverData(d) { localStorage.setItem(SAVER_KEY, JSON.stringify(d)); }
 
 /* ── Helpers de fecha/mes ── */
-function todayStr()  { return new Date().toISOString().slice(0,10); }
-function thisMonthStr() { return new Date().toISOString().slice(0,7); }
+/* Fecha local (no UTC) — evita el desfase de zona horaria Colombia UTC-5 */
+function todayStr() {
+    let d = new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function thisMonthStr() {
+    let d = new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+}
 function daysInMonth() { let n=new Date(); return new Date(n.getFullYear(), n.getMonth()+1, 0).getDate(); }
 function dayOfMonth()  { return new Date().getDate(); }
 function firstDayOfMonth() { let n=new Date(); return new Date(n.getFullYear(), n.getMonth(), 1).getDay(); }
 function monthEntries() { let d=getSaverData(); return d.entries.filter(e=>e.date.startsWith(thisMonthStr())); }
 function monthTotal() { return monthEntries().reduce((s,e)=>s+e.amount, 0); }
-function getGoal() { return parseFloat((document.getElementById('saverGoal')||{}).value||''.replace(/\./g,'')) || getSaverData().goal || $v('extra') || 0; }
+function getGoal() {
+    let el  = document.getElementById('saverGoal');
+    let raw = el ? (el.value || '').replace(/\./g, '') : '';
+    return parseFloat(raw) || getSaverData().goal || $v('extra') || 0;
+}
 
 /* ── Racha ── */
 function updateStreak() {
@@ -2057,26 +2089,30 @@ function renderSaver() {
         }
     }
 
-    // Estrategias
+    // Estrategias — reconstruye desde cero en cada render
     let sRow = document.getElementById('strategyRow');
     if (sRow) {
-        sRow.innerHTML = STRATEGIES.map(st=>
+        sRow.innerHTML = STRATEGIES.map(st =>
             `<button class="btn-strategy${d.strategy===st.id?' active':''}" onclick="setStrategy('${st.id}')" title="${st.desc}">${st.label}</button>`
         ).join('');
     }
 
-    // Botones rápidos
+    // Botones rápidos — reset primero para evitar duplicados al cambiar estrategia
     let qRow = document.getElementById('quickAddRow');
     if (qRow) {
-        let dailyT = getDailyTarget(goal, d.strategy);
+        qRow.innerHTML = '';
+        let dailyT  = getDailyTarget(goal, d.strategy);
         let presets = [5000, 10000, 20000, 50000];
-        if (dailyT && dailyT>0 && !presets.includes(Math.round(dailyT/1000)*1000))
-            presets.push(Math.round(dailyT/1000)*1000);
-        presets.sort((a,b)=>a-b).slice(0,5).forEach(amt=>{
-            let isTarget = dailyT && Math.abs(amt-Math.round(dailyT/1000)*1000)<1000;
-            qRow.innerHTML += `<button class="btn-quick${isTarget?' highlight':''}" onclick="addSaving(${amt})">${isTarget?'⭐ ':''}\$${(amt/1000).toFixed(0)}K</button>`;
-        });
-        qRow.innerHTML += `<button class="btn-quick" onclick="document.getElementById('saverAmt').focus()">Otro…</button>`;
+        if (dailyT && dailyT > 0) {
+            let rounded = Math.round(dailyT / 1000) * 1000 || dailyT;
+            if (!presets.includes(rounded)) presets.push(rounded);
+        }
+        let html = presets.sort((a,b)=>a-b).slice(0,5).map(amt => {
+            let isTarget = dailyT && Math.abs(amt - (Math.round(dailyT/1000)*1000||dailyT)) < 1000;
+            return `<button class="btn-quick${isTarget?' highlight':''}" onclick="addSaving(${amt})">${isTarget?'⭐ ':''}\$${amt>=1000?(amt/1000).toFixed(0)+'K':amt}</button>`;
+        }).join('');
+        html += `<button class="btn-quick" onclick="document.getElementById('saverAmt').focus()">Otro…</button>`;
+        qRow.innerHTML = html;
     }
 
     // Calendario
