@@ -934,70 +934,93 @@ async function exportPDF() {
         const nd    = document.getElementById('nextPaymentDate').value         || '';
         const orig  = parseFloat(document.getElementById('originalAmt').value) || 0;
         const rate  = ann / 12 / 100;
+        const now   = new Date();
 
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-        const W = 210, M = 18, C = W - M * 2;
+        const W = 210, H = 297, M = 16, C = W - M * 2;
         let y = 0;
 
-        const clr = {
-            bg:     [7,  7, 26],
-            card:   [15, 15, 35],
-            accent: [129,140,248],
-            green:  [52, 211,153],
-            red:    [251,113,133],
-            gold:   [251,191,36],
-            text:   [241,245,249],
-            muted:  [100,116,139],
-            border: [30, 30, 60],
-        };
+        // Paleta fiel a la app
+        const BG    = [7,  7, 26];
+        const CARD  = [13, 13, 36];
+        const CARD2 = [22, 22, 52];
+        const ACC   = [129,140,248];
+        const GRN   = [52, 211,153];
+        const RED   = [251,113,133];
+        const GLD   = [251,191,36];
+        const TXT   = [241,245,249];
+        const MUT   = [148,163,184];
+        const BDR   = [35, 35, 72];
 
-        // ── ENCABEZADO ──────────────────────────────────
-        doc.setFillColor(...clr.bg);
-        doc.rect(0, 0, W, 42, 'F');
-        // Barra de acento superior
-        doc.setFillColor(...clr.accent);
-        doc.rect(0, 0, W, 3, 'F');
+        // ── FONDO OSCURO COMPLETO ─────────────────────
+        doc.setFillColor(...BG);
+        doc.rect(0, 0, W, H, 'F');
 
-        doc.setTextColor(...clr.text);
-        doc.setFontSize(20); doc.setFont('helvetica', 'bold');
-        doc.text('LIBERTAD FINANCIERA', M, 20);
-        doc.setFontSize(9);  doc.setFont('helvetica', 'normal');
-        doc.setTextColor(...clr.muted);
-        const now = new Date();
-        doc.text('Reporte generado: ' + fd(now) + '  ·  ' + now.getHours()+':'+String(now.getMinutes()).padStart(2,'0'), M, 30);
-        doc.text('Cuotas pagadas: ' + REF.paid + ' de ' + REF.totalTerm, M, 38);
+        // ── BARRA SUPERIOR DE ACENTO ──────────────────
+        doc.setFillColor(...ACC);
+        doc.rect(0, 0, W, 2.5, 'F');
+
+        // ── HEADER CARD ───────────────────────────────
+        doc.setFillColor(...CARD);
+        doc.rect(0, 2.5, W, 40, 'F');
+
+        doc.setTextColor(...TXT);
+        doc.setFontSize(18); doc.setFont('helvetica', 'bold');
+        doc.text('LIBERTAD FINANCIERA', M, 18);
+
+        doc.setFontSize(8.5); doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...MUT);
+        doc.text(
+            'Reporte: ' + fd(now) + '  ·  ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') +
+            '  ·  Cuotas: ' + REF.paid + ' / ' + REF.totalTerm,
+            M, 28
+        );
+        // Barra de progreso en header
+        const hPct = REF.paid / REF.totalTerm;
+        doc.setFillColor(...BDR); doc.roundedRect(M, 32, C, 3.5, 1, 1, 'F');
+        doc.setFillColor(...ACC); doc.roundedRect(M, 32, C * hPct, 3.5, 1, 1, 'F');
+        doc.setTextColor(...ACC); doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+        doc.text(Math.round(hPct*100)+'% del plazo completado', M + C * hPct + 2, 35.5);
+
         y = 52;
 
-        // ── HELPER: sección ──────────────────────────────
-        const section = (title, color) => {
-            doc.setTextColor(...color);
-            doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+        // ── HELPERS ───────────────────────────────────
+        // Dibujar una tarjeta de fondo
+        const card = (cy, ch, fillClr) => {
+            doc.setFillColor(...fillClr);
+            doc.roundedRect(M, cy, C, ch, 2.5, 2.5, 'F');
+        };
+        // Línea separadora de sección con título
+        const section = (title, clr) => {
+            doc.setFontSize(7.5); doc.setFont('helvetica','bold');
+            doc.setTextColor(...clr);
             doc.text(title, M, y);
-            doc.setDrawColor(...color);
-            doc.setLineWidth(0.4);
-            doc.line(M, y + 2, M + C, y + 2);
-            y += 9;
+            doc.setDrawColor(...clr); doc.setLineWidth(0.3);
+            doc.line(M + doc.getTextWidth(title) + 2, y - 0.5, M + C, y - 0.5);
+            y += 7;
         };
 
-        // ── ESTADO ACTUAL ────────────────────────────────
-        section('ESTADO ACTUAL DEL CRÉDITO', clr.accent);
+        // ── ESTADO ACTUAL ─────────────────────────────
+        section('ESTADO ACTUAL DEL CRÉDITO', ACC);
+        card(y - 2, 43, CARD);
         const fields = [
-            ['Saldo actual',    bal   ? cop(bal)   : '—'],
-            ['Cuota mensual',   pmt   ? cop(pmt)   : '—'],
-            ['Abono extra/mes', extra ? cop(extra) : '$ 0'],
-            ['Tasa nominal',    ann   ? ann + ' %' : '—'],
-            ['Próximo pago',    nd    || '—'],
+            ['Saldo actual',   bal  ? cop(bal)    : '—', TXT],
+            ['Cuota mensual',  pmt  ? cop(pmt)    : '—', TXT],
+            ['Abono extra',    extra? cop(extra)  : '$ 0', GRN],
+            ['Tasa nominal',   ann  ? ann + '%'   : '—', TXT],
+            ['Próximo pago',   nd   || '—',              MUT],
         ];
-        if (orig) fields.push(['Monto original', cop(orig)]);
-        fields.forEach(([lbl, val]) => {
-            doc.setFont('helvetica', 'normal'); doc.setTextColor(...clr.muted); doc.setFontSize(9);
-            doc.text(lbl + ':', M, y);
-            doc.setFont('helvetica', 'bold'); doc.setTextColor(...clr.text);
-            doc.text(val, M + 52, y);
-            y += 7;
+        if (orig) fields.push(['Monto original', cop(orig), MUT]);
+
+        fields.forEach(([lbl, val, vc], i) => {
+            const fy = y + 4 + i * 6.8;
+            doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(...MUT);
+            doc.text(lbl, M + 4, fy);
+            doc.setFont('helvetica','bold'); doc.setTextColor(...vc);
+            doc.text(val, M + C - 4, fy, { align: 'right' });
         });
-        y += 4;
+        y += 50;
 
         if (bal && pmt && ann && nd) {
             const norm  = simulate(bal, pmt, rate, 0);
@@ -1007,88 +1030,101 @@ async function exportPDF() {
                 const eEnd   = addMonths(nd, withE.months - 1);
                 const saved  = norm.months - withE.months;
                 const savedI = norm.totalInterest - withE.totalInterest;
-                const half   = (C - 6) / 2;
+                const half   = (C - 5) / 2;
 
-                // ── ESCENARIOS ───────────────────────────────
-                section('COMPARATIVA DE ESCENARIOS', clr.muted);
+                // ── ESCENARIOS ────────────────────────────
+                section('COMPARATIVA DE ESCENARIOS', MUT);
 
-                // Fondo izquierdo (sin abono)
-                doc.setFillColor(251, 113, 133, 18);
-                doc.roundedRect(M, y, half, 46, 2, 2, 'F');
-                doc.setTextColor(...clr.red);
-                doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-                doc.text('SIN ABONO EXTRA', M + 4, y + 8);
+                // Card izquierda (sin abono) — borde rojo
+                doc.setFillColor(...CARD);
+                doc.roundedRect(M, y, half, 50, 2.5, 2.5, 'F');
+                doc.setFillColor(...RED);
+                doc.roundedRect(M, y, half, 2.5, 2.5, 2.5, 'F');
+                doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(...RED);
+                doc.text('SIN ABONO EXTRA', M + 4, y + 9);
 
-                // Fondo derecho (con abono)
-                const rx = M + half + 6;
-                doc.setFillColor(52, 211, 153, 12);
-                doc.roundedRect(rx, y, half, 46, 2, 2, 'F');
-                doc.setTextColor(...clr.green);
-                doc.text('CON ABONO EXTRA', rx + 4, y + 8);
+                // Card derecha (con abono) — borde verde
+                const rx = M + half + 5;
+                doc.setFillColor(...CARD);
+                doc.roundedRect(rx, y, half, 50, 2.5, 2.5, 'F');
+                doc.setFillColor(...GRN);
+                doc.roundedRect(rx, y, half, 2.5, 2.5, 2.5, 'F');
+                doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(...GRN);
+                doc.text('CON ABONO EXTRA', rx + 4, y + 9);
 
                 const scRows = [
-                    ['Cuotas', norm.months + ' cuotas',   withE.months + ' cuotas'],
-                    ['Fin',    fd(nEnd),                   fd(eEnd)],
-                    ['Intereses', cop(norm.totalInterest), cop(withE.totalInterest)],
-                    ['Total',  cop(norm.totalInterest+bal),cop(withE.totalInterest+bal)],
+                    ['Cuotas restantes', norm.months+' cuotas',          withE.months+' cuotas'],
+                    ['Último pago',      fd(nEnd),                        fd(eEnd)],
+                    ['Intereses totales',cop(norm.totalInterest),         cop(withE.totalInterest)],
+                    ['Total a pagar',    cop(norm.totalInterest + bal),   cop(withE.totalInterest + bal)],
                 ];
                 scRows.forEach(([lbl, vN, vE], i) => {
-                    const ry = y + 16 + i * 7;
-                    doc.setFont('helvetica', 'normal'); doc.setTextColor(...clr.muted); doc.setFontSize(8);
-                    doc.text(lbl + ':', M + 4, ry);
-                    doc.setFont('helvetica', 'bold'); doc.setTextColor(...clr.text);
-                    doc.text(vN, M + 24, ry);
-                    doc.text(lbl + ':', rx + 4, ry);
-                    doc.text(vE, rx + 24, ry);
+                    const ry = y + 17 + i * 7.5;
+                    doc.setFont('helvetica','normal'); doc.setTextColor(...MUT); doc.setFontSize(7.5);
+                    doc.text(lbl+':', M + 4, ry);
+                    doc.setFont('helvetica','bold'); doc.setTextColor(...TXT);
+                    doc.text(vN, M + half - 4, ry, { align: 'right' });
+                    doc.setFont('helvetica','normal'); doc.setTextColor(...MUT);
+                    doc.text(lbl+':', rx + 4, ry);
+                    doc.setFont('helvetica','bold'); doc.setTextColor(...TXT);
+                    doc.text(vE, rx + half - 4, ry, { align: 'right' });
                 });
-                y += 56;
+                y += 60;
 
-                // ── AHORRO REAL ──────────────────────────────
-                section('TU AHORRO REAL', clr.gold);
-                doc.setFillColor(251, 191, 36, 12);
-                doc.roundedRect(M, y, C, 32, 3, 3, 'F');
+                // ── AHORRO REAL ───────────────────────────
+                section('TU AHORRO REAL', GLD);
+                card(y - 2, 36, CARD2);
+                // Borde dorado
+                doc.setFillColor(...GLD);
+                doc.roundedRect(M, y - 2, C, 2, 2, 2, 'F');
 
                 const thirds = C / 3;
-                const savings = [
-                    [saved + ' cuotas', 'menos', clr.accent],
-                    [cop(savedI), 'en intereses', clr.green],
-                    [fmy(eEnd), saved>0 ? saved+' meses antes' : 'mismo plazo', clr.gold],
+                const savRows = [
+                    [saved+' cuotas',  'cuotas menos',      ACC],
+                    [cop(savedI),      'intereses ahorrados', GRN],
+                    [fmy(eEnd),        saved>0?saved+' meses antes':'mismo plazo', GLD],
                 ];
-                savings.forEach(([val, sub, color], i) => {
+                savRows.forEach(([val, sub, clr], i) => {
                     const sx = M + i * thirds + thirds / 2;
-                    doc.setFont('helvetica', 'bold'); doc.setTextColor(...color); doc.setFontSize(11);
-                    doc.text(val, sx, y + 13, { align: 'center' });
-                    doc.setFont('helvetica', 'normal'); doc.setTextColor(...clr.muted); doc.setFontSize(7.5);
-                    doc.text(sub, sx, y + 21, { align: 'center' });
+                    doc.setFont('helvetica','bold'); doc.setTextColor(...clr); doc.setFontSize(12);
+                    doc.text(val, sx, y + 14, { align: 'center' });
+                    doc.setFont('helvetica','normal'); doc.setTextColor(...MUT); doc.setFontSize(7.5);
+                    doc.text(sub, sx, y + 22, { align: 'center' });
                 });
-                y += 40;
+                y += 44;
 
-                // ── CAPITAL SALDADO ───────────────────────────
+                // ── CAPITAL SALDADO ───────────────────────
                 if (orig > 0) {
                     const capPaid = orig - bal;
                     const capPct  = Math.max(0, Math.min(100, capPaid / orig * 100));
-                    section('CAPITAL SALDADO', clr.gold);
-                    doc.setFont('helvetica', 'normal'); doc.setTextColor(...clr.muted); doc.setFontSize(9);
-                    doc.text(Math.round(capPct * 10) / 10 + '% pagado  ·  ' + cop(capPaid) + ' de ' + cop(orig), M, y);
-                    // Barra
-                    doc.setFillColor(...clr.border);
-                    doc.roundedRect(M, y + 4, C, 5, 1, 1, 'F');
-                    doc.setFillColor(...clr.gold);
-                    doc.roundedRect(M, y + 4, C * capPct / 100, 5, 1, 1, 'F');
-                    y += 18;
+                    section('CAPITAL SALDADO', GLD);
+                    card(y - 2, 22, CARD);
+
+                    doc.setFont('helvetica','bold'); doc.setTextColor(...GLD); doc.setFontSize(13);
+                    doc.text(Math.round(capPct*10)/10 + '%', M + 4, y + 8);
+                    doc.setFont('helvetica','normal'); doc.setTextColor(...MUT); doc.setFontSize(8);
+                    doc.text('pagado  ·  ' + cop(capPaid) + ' de ' + cop(orig), M + 24, y + 8);
+
+                    doc.setFillColor(...BDR);
+                    doc.roundedRect(M + 4, y + 13, C - 8, 4, 1, 1, 'F');
+                    doc.setFillColor(...GLD);
+                    doc.roundedRect(M + 4, y + 13, (C - 8) * capPct / 100, 4, 1, 1, 'F');
+                    y += 30;
                 }
             }
         }
 
-        // ── FOOTER ─────────────────────────────────────
-        doc.setFillColor(...clr.card);
-        doc.rect(0, 282, W, 15, 'F');
-        doc.setTextColor(...clr.muted); doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
-        doc.text('Generado por Libertad Financiera PWA  ·  Solo para uso personal', M, 289);
-        doc.setTextColor(...clr.accent);
-        doc.text('landing7181.github.io/libertad-financiera', W - M, 289, { align: 'right' });
+        // ── FOOTER ────────────────────────────────────
+        doc.setFillColor(...CARD);
+        doc.rect(0, H - 12, W, 12, 'F');
+        doc.setFillColor(...ACC);
+        doc.rect(0, H - 12, W, 0.8, 'F');
+        doc.setTextColor(...MUT); doc.setFontSize(7); doc.setFont('helvetica','normal');
+        doc.text('Libertad Financiera PWA  ·  Solo uso personal', M, H - 4);
+        doc.setTextColor(...ACC);
+        doc.text('landing7181.github.io/libertad-financiera', W - M, H - 4, { align: 'right' });
 
-        // ── COMPARTIR / DESCARGAR ──────────────────────
+        // ── EXPORTAR ──────────────────────────────────
         const fileName = 'libertad-' + now.toISOString().slice(0,10) + '.pdf';
         const blob = doc.output('blob');
         const file = new File([blob], fileName, { type: 'application/pdf' });
@@ -1097,7 +1133,7 @@ async function exportPDF() {
             await navigator.share({
                 files: [file],
                 title: 'Libertad Financiera — Reporte',
-                text: 'Mi reporte de crédito generado el ' + fd(now),
+                text: 'Reporte de crédito generado el ' + fd(now),
             });
         } else {
             doc.save(fileName);
@@ -1105,7 +1141,7 @@ async function exportPDF() {
     } catch(e) {
         if (e.name !== 'AbortError') {
             console.error(e);
-            alert('No se pudo generar el PDF. Verifica que hayas ingresado los datos del crédito.');
+            alert('No se pudo generar el PDF. Verifica que hayas ingresado los datos.');
         }
     } finally {
         btn.disabled = false;
