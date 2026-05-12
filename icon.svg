@@ -1,12 +1,68 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Fondo negro Bauhaus -->
-  <rect width="512" height="512" fill="#111"/>
-  <!-- "L" de Libertad en amarillo Bauhaus — trazo vertical -->
-  <rect x="148" y="96" width="68" height="284" fill="#ffcc00"/>
-  <!-- "L" — trazo horizontal -->
-  <rect x="148" y="312" width="188" height="68" fill="#ffcc00"/>
-  <!-- Cuadrado azul acento (esquina superior derecha) -->
-  <rect x="336" y="96" width="68" height="68" fill="#0055ff"/>
-  <!-- Punto rojo Bauhaus (esquina inferior derecha) -->
-  <circle cx="380" cy="412" r="40" fill="#ff0000"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#131330"/>
+      <stop offset="100%" stop-color="#07071a"/>
+    </linearGradient>
+    <linearGradient id="arc" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="txt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softglow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fondo redondeado oscuro -->
+  <rect width="512" height="512" rx="104" fill="url(#bg)"/>
+
+  <!-- Radial glow violeta de fondo -->
+  <circle cx="256" cy="230" r="190" fill="rgba(129,140,248,0.09)" filter="url(#softglow)"/>
+
+  <!-- Anillo base (track) -->
+  <circle cx="256" cy="240" r="162" fill="none"
+          stroke="rgba(255,255,255,0.07)" stroke-width="30"/>
+
+  <!-- Arco de progreso dorado ~68% — circunferencia ≈ 1018, 68% ≈ 692 -->
+  <circle cx="256" cy="240" r="162" fill="none"
+          stroke="url(#arc)" stroke-width="30"
+          stroke-linecap="round"
+          stroke-dasharray="692 1018"
+          transform="rotate(-90 256 240)"
+          filter="url(#glow)"/>
+
+  <!-- Punto final del arco (brillo) -->
+  <circle cx="256" cy="78" r="18" fill="#fbbf24" opacity="0.5" filter="url(#glow)"/>
+
+  <!-- "LF" monograma bold -->
+  <text x="256" y="258"
+        text-anchor="middle" dominant-baseline="middle"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-weight="900" font-size="148"
+        fill="url(#txt)"
+        letter-spacing="-7">LF</text>
+
+  <!-- Línea acento inferior violeta→verde -->
+  <rect x="188" y="420" width="136" height="6" rx="3"
+        fill="none" stroke="url(#arc)" stroke-width="0"/>
+  <linearGradient id="bar" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#818cf8"/>
+    <stop offset="100%" stop-color="#34d399"/>
+  </linearGradient>
+  <rect x="188" y="420" width="136" height="6" rx="3" fill="url(#bar)" opacity="0.75"/>
 </svg>

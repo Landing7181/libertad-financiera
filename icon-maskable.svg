@@ -1,11 +1,53 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Fondo completo para ícono maskable (safe zone = 80% central) -->
-  <rect width="512" height="512" fill="#111"/>
-  <!-- "L" centrada dentro del safe zone (padding ~52px) -->
-  <rect x="160" y="116" width="60" height="248" fill="#ffcc00"/>
-  <rect x="160" y="304" width="168" height="60" fill="#ffcc00"/>
-  <!-- Acento azul -->
-  <rect x="328" y="116" width="60" height="60" fill="#0055ff"/>
-  <!-- Punto rojo -->
-  <circle cx="368" cy="392" r="36" fill="#ff0000"/>
+  <!-- Maskable: fondo completo, contenido en zona segura central (80%) -->
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#131330"/>
+      <stop offset="100%" stop-color="#07071a"/>
+    </linearGradient>
+    <linearGradient id="arc2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="bar2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <filter id="glow2" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fondo completo (sin bordes redondeados para maskable) -->
+  <rect width="512" height="512" fill="url(#bg2)"/>
+
+  <!-- Glow violeta de fondo -->
+  <circle cx="256" cy="250" r="160" fill="rgba(129,140,248,0.1)"/>
+
+  <!-- Track del anillo (radio más pequeño para zona segura) -->
+  <circle cx="256" cy="252" r="140" fill="none"
+          stroke="rgba(255,255,255,0.07)" stroke-width="26"/>
+
+  <!-- Arco dorado ~68% — circunferencia≈879, 68%≈598 -->
+  <circle cx="256" cy="252" r="140" fill="none"
+          stroke="url(#arc2)" stroke-width="26"
+          stroke-linecap="round"
+          stroke-dasharray="598 879"
+          transform="rotate(-90 256 252)"
+          filter="url(#glow2)"/>
+
+  <!-- Monograma LF -->
+  <text x="256" y="268"
+        text-anchor="middle" dominant-baseline="middle"
+        font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-weight="900" font-size="128"
+        fill="white" opacity="0.95"
+        letter-spacing="-6">LF</text>
+
+  <!-- Barra acento inferior -->
+  <rect x="200" y="410" width="112" height="5" rx="2.5" fill="url(#bar2)" opacity="0.7"/>
 </svg>
