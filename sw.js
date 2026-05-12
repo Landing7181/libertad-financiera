@@ -1,46 +1,79 @@
-const CACHE = 'credito-v1';
+/* ─────────────────────────────────────────────────────
+   Service Worker — Libertad Financiera
+   Estrategia:
+     • index.html / archivos locales → Network-first
+       (siempre intenta la red; caché solo si offline)
+     • CDN externos (Chart.js, Google Fonts) → Cache-first
+       (no cambian; se sirven desde caché para velocidad)
+   ───────────────────────────────────────────────────── */
 
-// Archivos locales siempre cacheados
-const LOCAL = ['./', './index.html', './manifest.json', './icon.svg', './icon-maskable.svg'];
+// Cambia este número con cada deploy para forzar cache fresco
+const VERSION = Date.now(); // se actualiza solo al re-desplegar el sw.js
+const CACHE_LOCAL = `lf-local-${VERSION}`;
+const CACHE_CDN   = 'lf-cdn-v2';   // sube la versión si cambias CDN
 
-// CDN externos — se cachean la primera vez que se descargan
-const CDN = [
-    'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
-    'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'
-];
+const LOCAL_FILES = ['./', './index.html', './manifest.json', './icon.svg', './icon-maskable.svg'];
+const CDN_ORIGINS = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
-// Instalar: pre-cachear archivos locales (y CDN si hay red)
+// ── INSTALL: pre-cachear archivos locales ──────────────
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(CACHE).then(cache =>
-            cache.addAll(LOCAL)
-                .then(() => cache.addAll(CDN).catch(() => {})) // CDN opcional
-        )
+        caches.open(CACHE_LOCAL).then(cache => cache.addAll(LOCAL_FILES))
     );
-    self.skipWaiting();
+    self.skipWaiting(); // toma control inmediatamente sin esperar cierre de tabs
 });
 
-// Activar: eliminar cachés viejos
+// ── ACTIVATE: eliminar todos los cachés locales viejos ─
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(keys =>
-            Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-        )
+            Promise.all(
+                keys
+                    .filter(k => k !== CACHE_LOCAL && k !== CACHE_CDN)
+                    .map(k => caches.delete(k))
+            )
+        ).then(() => self.clients.claim()) // controla todas las tabs abiertas
+         .then(() =>
+             // Recarga silenciosa en todas las tabs para mostrar la versión nueva
+             self.clients.matchAll({ type: 'window' }).then(clients =>
+                 clients.forEach(c => c.navigate(c.url))
+             )
+         )
     );
-    self.clients.claim();
 });
 
-// Fetch: caché primero, red de respaldo, luego index.html si todo falla
+// ── FETCH: estrategia según origen ────────────────────
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request).then(cached => {
-            if (cached) return cached;
-            return fetch(event.request).then(response => {
-                if (response && response.status === 200 && response.type !== 'opaque') {
-                    caches.open(CACHE).then(c => c.put(event.request, response.clone()));
-                }
-                return response;
-            }).catch(() => caches.match('./index.html'));
-        })
-    );
+    const url = new URL(event.request.url);
+    const isCDN = CDN_ORIGINS.some(o => url.hostname.includes(o));
+
+    if (isCDN) {
+        // Cache-first para CDN (no cambian; acelera carga)
+        event.respondWith(
+            caches.match(event.request).then(cached => {
+                if (cached) return cached;
+                return fetch(event.request).then(res => {
+                    if (res && res.status === 200) {
+                        caches.open(CACHE_CDN).then(c => c.put(event.request, res.clone()));
+                    }
+                    return res;
+                });
+            })
+        );
+    } else {
+        // Network-first para archivos locales (siempre la versión más nueva)
+        event.respondWith(
+            fetch(event.request)
+                .then(res => {
+                    if (res && res.status === 200 && event.request.method === 'GET') {
+                        caches.open(CACHE_LOCAL).then(c => c.put(event.request, res.clone()));
+                    }
+                    return res;
+                })
+                .catch(() =>
+                    // Sin red → servir desde caché (modo offline)
+                    caches.match(event.request).then(c => c || caches.match('./index.html'))
+                )
+        );
+    }
 });
